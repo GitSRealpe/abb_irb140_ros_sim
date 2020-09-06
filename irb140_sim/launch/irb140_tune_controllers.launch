@@ -1,0 +1,6 @@
+<launch>
+	<!-- rqt -->
+	<node name="irb140_tuner" pkg="rqt_gui" type="rqt_gui"
+				args="--perspective-file $(find irb140_sim)/config/rqt/rqt_irb140_tuner.perspective"/>
+
+</launch>
