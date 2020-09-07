@@ -163,6 +163,7 @@ catkin_install_python(PROGRAMS
   scripts/talker.py
   scripts/listener.py
   scripts/pose_commander.py
+  scripts/joint_commander.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
