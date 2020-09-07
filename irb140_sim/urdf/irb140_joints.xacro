@@ -7,7 +7,7 @@
     <parent link="base_link"/>
     <child link="link_1"/>
     <axis xyz="0 0 1"/>
-    <limit effort="1000" lower="-0.7853" upper="0.7853" velocity="2.618"/>
+    <limit effort="1000" lower="-3.1416" upper="3.1416" velocity="2.618"/>
   </joint>
   <transmission name="trans_joint_1">
 		<type>transmission_interface/SimpleTransmission</type>
@@ -61,7 +61,7 @@
     <parent link="link_3"/>
     <child link="link_4"/>
     <axis xyz="1 0 0"/>
-    <limit effort="1000" lower="-1.4" upper="1.4" velocity="6.2832"/>
+    <limit effort="1000" lower="-3.49" upper="3.49" velocity="6.2832"/>
   </joint>
   <transmission name="trans_joint_4">
 		<type>transmission_interface/SimpleTransmission</type>
@@ -97,7 +97,7 @@
     <parent link="link_5"/>
     <child link="link_6"/>
     <axis xyz="1 0 0"/>
-    <limit effort="1000" lower="-1.4" upper="1.4" velocity="1"/>
+    <limit effort="1000" lower="-6.9813" upper="6.9813" velocity="1"/>
   </joint>
   <transmission name="trans_joint_6">
 		<type>transmission_interface/SimpleTransmission</type>
