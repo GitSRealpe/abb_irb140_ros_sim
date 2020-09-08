@@ -24,12 +24,24 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   tf2_eigen
   tf2_geometry_msgs
+  message_generation
 )
+
+add_message_files(
+  FILES
+  Num.msg
+)
+
+generate_messages(
+ DEPENDENCIES
+ std_msgs
+)
+
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES irb140_commander
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES irb140_commander
+  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+  DEPENDS system_lib
 )
 
 include_directories(
@@ -63,3 +75,7 @@ install(TARGETS test_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 add_executable(joint_commander src/joint_commander.cpp)
 target_link_libraries(joint_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS joint_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(robot_commander src/robot_commander.cpp)
+target_link_libraries(robot_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS robot_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
