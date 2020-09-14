@@ -43,38 +43,15 @@ namespace gazebo
       if(i==3000){
         std::cout <<" llegaste jermano\n";
         this->bot=this->world->ModelByName("irb_140");
-        this->link=this->bot->GetLink("irb_140::link_6");
+        //this->link=this->bot->GetLink("irb_140::link_6");
+        this->link=this->bot->GetLink("irb_140::fake_link");
         std::cout << this->link->RelativePose().Pos()<<"\n";
-        //pose=this->link->RelativePose();
-        //pose.Pos().X(pose.Pos().X()+0.5);
-        //this->model->SetWorldPose(pose);
         i=i+1;
         }
         pose=this->link->RelativePose();
-        pose.Pos().X(pose.Pos().X()+0.5);
+        //pose.Pos().X(pose.Pos().X()+0.5);
         this->model->SetWorldPose(pose);
       }
-
-      // if(i==3000){
-      //   std::cout <<" llegaste jermano\n";
-      //   this->bot=this->world->ModelByName("irb_140");
-      //   this->link=this->bot->GetLink("irb_140::link_6");
-      //   std::cout << this->link->RelativePose().Pos()<<"\n";
-      //   //pose=this->link->RelativePose();
-      //   //pose.Pos().X(pose.Pos().X()+0.5);
-      //   //this->model->SetWorldPose(pose);
-      //   i=i+1;
-      // }else{
-      //   if(i<3000){
-      //   i=i+1;
-      //   std::cout << i<<"\n";
-      //   }
-      //
-      //   pose=this->link->RelativePose();
-      //   pose.Pos().X(pose.Pos().X()+0.5);
-      //   this->model->SetWorldPose(pose);
-      // }
-
 
     }
     // Pointer to the model

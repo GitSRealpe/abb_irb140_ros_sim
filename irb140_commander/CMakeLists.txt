@@ -79,3 +79,7 @@ install(TARGETS joint_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 add_executable(robot_commander src/robot_commander.cpp)
 target_link_libraries(robot_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS robot_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(pose_commander src/pose_commander.cc)
+target_link_libraries(pose_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS pose_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
