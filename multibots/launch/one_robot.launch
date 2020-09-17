@@ -1,0 +1,23 @@
+<launch>
+    <arg name="robot_name"/>
+    <arg name="init_pose"/>
+    <arg name="grupo"/>
+
+    <node name="spawn_minibot_model" pkg="gazebo_ros" type="spawn_model"
+     args="$(arg init_pose) -urdf -param /robot_description -model $(arg robot_name)"
+     respawn="false" output="screen" />
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher"
+          name="robot_state_publisher" output="screen"/>
+
+    <!--Cargar controladores-->
+		<rosparam command="load" file="$(find multibots)/config/joints/joints.yaml" />
+
+    <!--Controladores-->
+		<node name="controller_spawner" pkg="controller_manager" type="spawner"
+					respawn="false" output="screen" ns="/$(arg grupo)"
+					args="--namespace=/$(arg grupo)
+					joint_state_controller
+					arm_controller"/>
+
+</launch>
