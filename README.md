@@ -16,9 +16,9 @@ catkin_make
 # Running
 There are two options or environments to simulate the robot, RViz and Gazebo
 ## RViz
-Simply run `roslaunch abb_irb140_ros_sim irb140_rviz.launch`
+Simply run `roslaunch irb140_sim irb140_rviz.launch`
 ## Gazebo
-Simply run `roslaunch abb_irb140_ros_sim irb140_gazebo.launch`
+Simply run `roslaunch irb140_sim irb140_gazebo.launch`
 
 **Author:** Sebastian Realpe Rua, mainly for use in the robotics lab of Universidad Nacional de Colombia
 
