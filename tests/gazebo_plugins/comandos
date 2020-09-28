@@ -1,0 +1,16 @@
+PREVIO
+
+add_library(model_push SHARED model_push.cc)
+target_link_libraries(model_push ${GAZEBO_LIBRARIES})
+
+COMPILACION
+
+cd ~/carpeta del plugin/build
+cmake ../
+make
+
+EJECUCION
+
+export GAZEBO_PLUGIN_PATH=$HOME/catkin_ws/src/abb_irb140_ros_sim/tests/gazebo_plugins/push_sdf/build:$GAZEBO_PLUGIN_PATH
+gzserver --verbose -u push_sdf.world
+gzclient

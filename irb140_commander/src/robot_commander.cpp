@@ -10,7 +10,7 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
 
   //ros::Publisher chatter_pub = n.advertise<std_msgs::String>("robot_commander/cmd_vel", 1000);
-
+  //este me lanze todos los scripts que qiera
   ros::Publisher chatter_pub = n.advertise<irb140_commander::Num>("robot_commander/cmd_vel", 1000);
 
   ros::Rate loop_rate(10);
