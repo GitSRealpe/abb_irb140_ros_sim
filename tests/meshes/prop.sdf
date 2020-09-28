@@ -1,0 +1,23 @@
+<sdf version="1.6">
+   <model name="model_00">
+       <pose>0 0 0.5 0 0 0</pose>
+       <link name="link_00">
+       <pose>0.0 0 0 0 0 0</pose>
+       <collision name="collision_00">
+           <pose>0.0 0 0 0 0 0</pose>
+           <geometry>
+               <sphere>
+                   <radius>0.5</radius>
+               </sphere>
+           </geometry>
+       </collision>
+       <visual name="visual_00">
+           <geometry>
+               <sphere>
+                   <radius>0.5</radius>
+               </sphere>
+           </geometry>
+       </visual>
+       </link>
+   </model>
+</sdf>

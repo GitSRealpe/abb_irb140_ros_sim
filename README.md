@@ -25,3 +25,22 @@ Simply run `roslaunch abb_irb140_ros_sim irb140_gazebo.launch`
 **With the help from:**
 
 https://github.com/FreddyMartinez/abb_irb140_support as a good starting point, helped to reduce initial setup work.
+
+```
+ros-desktop-full
+ros-kinetic-moveit
+ros-kinetic-moveit-visual-tools
+ros-kinetic-controller-manager
+ros-kinetic-joint-trajectory-controller
+______________________________________________
+http://gazebosim.org/tutorials?tut=install_ubuntu
+https://www.theconstructsim.com/all-about-gazebo-9-with-ros/
+____________________________________________________________
+
+ros-kinetic-joint-state-controller
+__________________________________
+ros-kinetic-rqt-joint-trajectory-controller
+https://answers.ros.org/question/91231/rqt-plugin-not-listedfound-in-list-returned-by-rqt-list-plugins/
+rm ~/.config/ros.org/rqt_gui.ini
+_______________________________________
+```

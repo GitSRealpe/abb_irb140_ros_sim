@@ -19,6 +19,7 @@ class MoveEnable{
   void MoveEnable::cmdCallback(const geometry_msgs::Pose::ConstPtr& msg){
     ROS_INFO("Pose recibida:");
     std::cout << msg->position <<"\n";
+    std::cout << msg->orientation<<"\n";
     std::cout << "Marco de referencia: "<<"\n";
     std::cout << "ejecutando comando..."<<"\n";
 
