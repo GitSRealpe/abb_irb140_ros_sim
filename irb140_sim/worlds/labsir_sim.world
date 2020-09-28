@@ -372,5 +372,69 @@
         <projection_type>orthographic</projection_type>
       </camera>
     </gui>
+
+    <model name="obj1">
+      <pose>0.8 0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.02</radius>
+              <length>0.1</length>
+            </cylinder>
+          </geometry>
+        </visual>
+      </link>
+      <plugin name="pose_link" filename="libpose_link.so"/>
+    </model>
+
+    <model name="obj2">
+      <pose>0 -0.7 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+        </visual>
+      </link>
+      <plugin name="pose_link" filename="libpose_link.so"/>
+    </model>
+
+    <model name="obj3">
+      <pose>0.5 -0.5 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+        </visual>
+      </link>
+      <plugin name="pose_link" filename="libpose_link.so"/>
+    </model>
   </world>
 </sdf>
