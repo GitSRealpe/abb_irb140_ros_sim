@@ -15,7 +15,7 @@ export GAZEBO_PLUGIN_PATH=$HOME/catkin_ws/src/abb_irb140_ros_sim/tests/gazebo_pl
 gzserver --verbose -u push_sdf.world
 gzclient
 
-
+export GAZEBO_MODEL_PATH=$HOME/catkin_ws/src/abb_irb140_ros_sim/tests/meshes:$GAZEBO_MODEL_PATH
 
 <model name="model_00">
     <pose>0 0 0.5 0 0 0</pose>
