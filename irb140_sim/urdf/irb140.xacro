@@ -190,8 +190,17 @@
 			<inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001" />
 		</inertial>
 	</link>
+	<!--link_camera-->
+	<link name="cam_link">
+		<visual>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+			<geometry>
+				<mesh filename="package://irb140_sim/meshes/kinect/meshes/kinect.dae" scale="1 1 1"/>
+			</geometry>
+		</visual>
+	</link>
 	<!--link_tool-->
-	<link name="tool0"/>
+	<!-- <link name="tool0"/> -->
 	<!-- Used for fixing robot to Gazebo 'base_link' -->
   <link name="world"/>
   <joint name="fixed" type="fixed">
