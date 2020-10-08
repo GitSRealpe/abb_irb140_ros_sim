@@ -34,4 +34,7 @@
 			respawn="false" output="screen">
 			<remap from="/joint_states" to="/irb_140/joint_states" />
 		</node>
+
+		<!-- <node pkg="tf" type="static_transform_publisher" name="cam_calib_tf" args="0 0 0 0 0 0 cam_link cam_calib 100" /> -->
+		<!-- rosrun tf static_transform_publisher 0 0 0 0 1.57 0 0 cam_link cam_calib 1 -->
 </launch>

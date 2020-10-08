@@ -109,11 +109,24 @@
 			<mechanicalReduction>1</mechanicalReduction>
 		</actuator>
   </transmission>
+	<!--cam_joint-->
+	<joint name="cam_joint" type="fixed">
+    <parent link="link_4"/>
+    <child link="cam_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.1"/>
+  </joint>
+	<joint name="cam_depth_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="-1.57 0 -1.57 "/>
+    <parent link="cam_link"/>
+    <child link="cam_depth_link"/>
+  </joint>
+
+  <link name="cam_depth_link"></link>
 	<!--tool_joint-->
-	<joint name="joint_6-tool0" type="fixed">
+	<!-- <joint name="joint_6-tool0" type="fixed">
     <parent link="link_6"/>
     <child link="tool0"/>
     <origin rpy="0 1.57 0" xyz="0 0 0"/>
-  </joint>
+  </joint> -->
 
 </robot>
