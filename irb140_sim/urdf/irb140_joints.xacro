@@ -115,6 +115,7 @@
     <child link="cam_link"/>
     <origin rpy="0 0 0" xyz="0 0 0.1"/>
   </joint>
+	<!-- fix para la nube de puntos -->
 	<joint name="cam_depth_joint" type="fixed">
     <origin xyz="0 0 0" rpy="-1.57 0 -1.57 "/>
     <parent link="cam_link"/>
@@ -123,10 +124,10 @@
 
   <link name="cam_depth_link"></link>
 	<!--tool_joint-->
-	<!-- <joint name="joint_6-tool0" type="fixed">
+	<joint name="joint_6-tool0" type="fixed">
     <parent link="link_6"/>
-    <child link="tool0"/>
+    <child link="gripper_body"/>
     <origin rpy="0 1.57 0" xyz="0 0 0"/>
-  </joint> -->
+  </joint>
 
 </robot>

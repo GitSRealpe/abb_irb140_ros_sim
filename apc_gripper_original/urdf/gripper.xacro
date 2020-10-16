@@ -1,0 +1,189 @@
+<?xml version="1.0" ?>
+
+<robot name="gripper" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find apc_gripper_original)/urdf/joints.xacro"/>
+<xacro:include filename="$(find apc_gripper_original)/urdf/gripper.gazebo"/>
+
+  <!-- BASE LINK -->
+
+    <link name="gripper_body">
+      <inertial>
+        <mass value="1024" />
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <inertia ixx="170.667" ixy="0.0" ixz="0" iyy="170.667" iyz="0" izz="170.667" />
+      </inertial>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_soporte.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_soporte.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white">
+         <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+    </link>
+
+  <!-- LINKS --> 
+
+  <link name="left_ext">
+      <inertial>
+        <mass value="157.633" />
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <inertia ixx="13.235" ixy="0" ixz="0" iyy="13.235" iyz="0" izz="9.655" />
+      </inertial>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white">
+         <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+    </link>
+ 
+  <link name="left_int">
+      <inertial>
+        <mass value="157.633" />
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <inertia ixx="13.235" ixy="0" ixz="0" iyy="13.235" iyz="0" izz="9.655" />
+      </inertial>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white">
+         <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+    </link>
+  
+  <link name="right_ext">
+      <inertial>
+        <mass value="157.633" />
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <inertia ixx="13.235" ixy="0" ixz="0" iyy="13.235" iyz="0" izz="9.655" />
+      </inertial>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white">
+         <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+    </link>
+ 
+  <link name="right_int">
+      <inertial>
+        <mass value="157.633" />
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <inertia ixx="13.235" ixy="0" ixz="0" iyy="13.235" iyz="0" izz="9.655" />
+      </inertial>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white">
+         <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+    </link>
+ 
+  
+  <!-- FINGERS -->
+
+  <!-- LEFT FINGER -->
+ 
+  <link name="left_finger">
+      <inertial>
+        <mass value="57.906" />
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <inertia ixx="12.679" ixy="0" ixz="0" iyy="12.679" iyz="0" izz="0.651" />
+      </inertial>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_dedo.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_dedo.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white">
+         <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+    </link>
+             
+  <!-- RIGHT FINGER -->
+
+<link name="right_finger">
+      <inertial>
+        <mass value="57.906" />
+        <origin rpy="0 0 ${pi}" xyz="-0.0620 0 0" />
+        <inertia ixx="12.679" ixy="0" ixz="0" iyy="12.679" iyz="0" izz="0.651" />
+      </inertial>
+      <collision>
+        <origin rpy="0 0 ${pi}" xyz="-0.0620 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_dedo.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+      <visual>
+        <origin rpy="0 0 ${pi}" xyz="-0.0620 0 0" />
+        <geometry>
+          <mesh filename="package://apc_gripper_original/meshes/mesh_dedo.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="white">
+         <color rgba="1 1 1 1"/>
+        </material>
+      </visual>
+    </link>
+
+  <!-- END - Robot description -->
+
+  <!-- Used for fixing robot to Gazebo 'gripper_body' -->
+    <link name="world"/>
+    <joint name="fixed" type="fixed">
+        <parent link="world"/>
+        <child link="gripper_body"/>
+    </joint>
+  
+</robot>

@@ -27,7 +27,9 @@
 					respawn="false" output="screen" ns="/irb_140"
 					args="--namespace=/irb_140
 					joint_state_controller
-					arm_controller"/>
+					arm_controller
+					joint1_position_controller
+					joint2_position_controller"/>
 
 		<!-- convert joint states to TF transforms for rviz, etc -->
 		<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
@@ -35,6 +37,4 @@
 			<remap from="/joint_states" to="/irb_140/joint_states" />
 		</node>
 
-		<!-- <node pkg="tf" type="static_transform_publisher" name="cam_calib_tf" args="0 0 0 0 0 0 cam_link cam_calib 100" /> -->
-		<!-- rosrun tf static_transform_publisher 0 0 0 0 1.57 0 0 cam_link cam_calib 1 -->
 </launch>

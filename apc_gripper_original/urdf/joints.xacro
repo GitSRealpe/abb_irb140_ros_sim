@@ -1,0 +1,123 @@
+<?xml version="1.0" ?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- LINKS_BASE JOINTS -->
+
+    <joint name="gripper_body__left_ext" type="revolute">
+      <axis xyz="1 0 0" />
+      <limit effort="1000" lower="-3.14" upper="3.14" velocity="0.5" />
+      <origin rpy="0 0 0" xyz="0.0311 -0.046785 0.093" />
+      <parent link="gripper_body" />
+      <child link="left_ext" />
+    </joint>
+    <transmission name="trans_gripper_body__left_ext">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="gripper_body__left_ext">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_gripper_body__left_ext">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <joint name="gripper_body__left_int" type="revolute">
+      <axis xyz="1 0 0" />
+      <limit effort="1000" lower="-3.14" upper="3.14" velocity="0.5" />
+      <origin rpy="0 0 0" xyz="0.0311 -0.026 0.105" />
+      <parent link="gripper_body" />
+      <child link="left_int" />
+    </joint>
+    <!-- <transmission name="trans_gripper_body__left_int">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="gripper_body__left_int">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_gripper_body__left_int">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission> -->
+
+    <joint name="gripper_body__right_ext" type="revolute">
+      <axis xyz="1 0 0" />
+      <limit effort="1000" lower="-3.14" upper="3.14" velocity="0.5" />
+      <origin rpy="0 0 0" xyz="0.0311 0.046785 0.093" />
+      <parent link="gripper_body" />
+      <child link="right_ext" />
+    </joint>
+    <transmission name="trans_gripper_body__right_ext">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="gripper_body__right_ext">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_gripper_body__right_ext">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <joint name="gripper_body__right_int" type="revolute">
+      <axis xyz="1 0 0" />
+      <limit effort="1000" lower="-3.14" upper="3.14" velocity="0.5" />
+      <origin rpy="0 0 0" xyz="0.0311 0.026 0.105" />
+      <parent link="gripper_body" />
+      <child link="right_int" />
+    </joint>
+    <!-- <transmission name="trans_gripper_body__right_int">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="gripper_body__right_int">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_gripper_body__right_int">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission> -->
+
+  <!-- FINGERS -->
+
+  <!-- LEFT FINGER -->
+
+      <joint name="left_ext__left_finger" type="revolute">
+      <axis xyz="1 0 0" />
+      <limit effort="1000" lower="-3.14" upper="3.14" velocity="0.5" />
+      <origin rpy="0 0 0" xyz="0 0 0.080" />
+      <parent link="left_ext" />
+      <child link="left_finger" />
+    </joint>
+    <!-- <transmission name="trans_left_ext__left_finger">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="left_ext__left_finger">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_left_ext__left_finger">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission> -->
+
+  <!-- RIGHT FINGER -->
+
+      <joint name="right_ext__right_finger" type="revolute">
+      <axis xyz="1 0 0" />
+      <limit effort="1000" lower="-3.14" upper="3.14" velocity="0.5" />
+      <origin rpy="0 0 0" xyz="0 0 0.080" />
+      <parent link="right_ext" />
+      <child link="right_finger" />
+    </joint>
+    <!-- <transmission name="trans_right_ext__right_finger">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="right_ext__right_finger">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_right_ext__right_finger">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission> -->
+
+  <!-- END - Robot description -->
+
+</robot>

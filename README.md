@@ -32,6 +32,7 @@ ros-kinetic-moveit
 ros-kinetic-moveit-visual-tools
 ros-kinetic-controller-manager
 ros-kinetic-joint-trajectory-controller
+ros-kinetic-effort-controllers
 ros-kinetic-joint-state-publisher-gui
 ______________________________________________
 http://gazebosim.org/tutorials?tut=install_ubuntu
