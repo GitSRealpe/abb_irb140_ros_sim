@@ -7,7 +7,8 @@
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
   <xacro:include filename="$(find irb140_sim)/urdf/irb140.gazebo"/>
 
-	<xacro:include filename="$(find apc_gripper)/urdf/gripper.xacro"/>
+	<!-- gripper files -->
+	<xacro:include filename="$(find apc_gripper_position)/urdf/gripper.xacro"/>
 
  	<!--LINKS-->
 	<!--base_link-->
