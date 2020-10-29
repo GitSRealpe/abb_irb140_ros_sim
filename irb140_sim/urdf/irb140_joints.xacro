@@ -132,5 +132,11 @@
     <child link="gripper_body"/>
     <origin rpy="0 1.57 0" xyz="0 0 0"/>
   </joint>
-
+	<!-- tcp link -->
+	<link name="tcp_link"/>
+	<joint name="tcp_joint" type="fixed">
+		<parent link="link_6"/>
+		<child link="tcp_link"/>
+		<origin rpy="0 0 0" xyz="0.20 0 0"/>
+	</joint>
 </robot>

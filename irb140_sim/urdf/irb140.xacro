@@ -4,7 +4,7 @@
 
 	<xacro:arg name="cam" default="0" />
 	<xacro:property name="cam" value="$(arg cam)" />
-	
+
 	<!-- Macros de links y joints generalizados -->
 	<xacro:include filename="$(find irb140_sim)/urdf/irb140_joints.xacro"/>
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
@@ -197,7 +197,6 @@
 	</link>
 
 	<!--link_camera-->
-
 	<xacro:if value="${cam}">
 		<link name="cam_link">
 			<visual>
@@ -209,8 +208,6 @@
 		</link>
 	</xacro:if>
 
-	<!--link_tool-->
-	<!-- <link name="tool0"/> -->
 	<!-- Used for fixing robot to Gazebo 'base_link' -->
   <link name="world"/>
   <joint name="fixed" type="fixed">

@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: irb140_sim
+    relative_path: urdf/irb140.xacro
+    xacro_args: "--inorder "
+  SRDF:
+    relative_path: config/abb_irb140.srdf
+  CONFIG:
+    author_name: SRealpe
+    author_email: srealper@unal.edu.co
+    generated_timestamp: 1603955452
