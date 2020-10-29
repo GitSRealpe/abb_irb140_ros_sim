@@ -6,7 +6,7 @@
 		  <arg name="gui" value="true"/>
 		  <arg name="recording" value="false"/>
 		  <arg name="debug" value="false"/>
-			<arg name="world_name" value="$(find irb140_sim)/worlds/labsir_sim.world"/>
+			<arg name="world_name" value="$(find irb140_sim)/worlds/estante_picking.world"/>
 		</include>
 
 		<!--Cargar robot-->
