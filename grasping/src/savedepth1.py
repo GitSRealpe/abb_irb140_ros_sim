@@ -23,6 +23,8 @@ from std_msgs.msg import Float32MultiArray
 from models.common import post_process_output
 from utils.timeit import TimeIt
 
+from helpers.transforms import *
+
 device = torch.device('cpu')
 crop_size=400
 MODEL_FILE = 'ggcnn2_093'
@@ -103,7 +105,8 @@ def predict(depth, process_depth=True, crop_size=crop_size, out_size=crop_size, 
     depth = np.clip((depth - depth.mean()), -1, 1)
     #depth = cv2.blur(depth,(5,5))
     depthn = depth.copy()
-    depthn[60:340,113:288] = 0.00948*3
+    #y_init:y_fin,x_init:x_fin
+    depthn[120:280,73:330] = 0.00948*3
     #depthn = ndimage.filters.gaussian_filter(depthn, 1)
     depth = depth - depthn -0.00948*3
     #print(depth.shape)
@@ -141,7 +144,7 @@ def predict(depth, process_depth=True, crop_size=crop_size, out_size=crop_size, 
 class image_converter:
 
     def __init__(self, args):
-
+        print "aquip"
         self.index = 0
         if len(sys.argv) > 1:
             self.index = int(sys.argv[1])
@@ -154,39 +157,20 @@ class image_converter:
 
         #color_sub = rospy.Subscriber("/camera/color/image_raw",Image)
         print "depth"
-        rgbo = rospy.wait_for_message('/camera/color/image_raw1', Image)
+        rgbo = rospy.wait_for_message('/camera/color/image_raw', Image)
 	#depth_sub = rospy.Subscriber("/camera/depth/image_raw",Image)
         print "depth"
 	cmd_pub = rospy.Publisher('ggcnn/out/command1', Float32MultiArray, queue_size=1)
 
 	#rgbo = rospy.wait_for_message('/camera/color/image_raw1', Image)
-        deptho = rospy.wait_for_message('/camera/depth/image_raw1', Image)
+        deptho = rospy.wait_for_message('/camera/depth/image_raw', Image)
     #    rgbo = rospy.wait_for_message('/camera/rgb/image_color', Image)
         rgbfin = bridge.imgmsg_to_cv2(rgbo)
 	depthfin = bridge.imgmsg_to_cv2(deptho)
-  
+
         rgbfin1= cv2.cvtColor(rgbfin, cv2.COLOR_BGR2RGB)
         cv2.imwrite('rgb.png', rgbfin1)
-    #for x in range(480):
-    #    for y in range(480):
-    #        if x <= 135:
-    #            depthfin[x,y]=0.0705
 
-
-
-        #cv2.imwrite('depthback.png', depthfin)
-        #np.savetxt('depth.txt', depthfin)
-
-
-            #try:
-            #    cv_image = self.bridge.imgmsg_to_cv2(data, "passthrough")
-            #except CvBridgeError as e:
-            #    print(e)
-
-            #print "Saved to: ", base_path+str(self.index)+".jpg"
-            #cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB, cv_image)
-            #cv2.imwrite('/home/mateo/catkin_ws/src/grasping/src/img1.png', cv_image)#*255)
-            #self.index += 1
         ROBOT_Z = 0
         fx = 458.455478616934780
         cx = 343.645038678435410
@@ -194,17 +178,9 @@ class image_converter:
         cy = 229.805975111304460
         #MODEL_FILE = 'training2_084'
 
-
         points_out, ang_out, width_out, depth = predict(depthfin)
 
         grasps = grasp.detect_grasps(points_out, ang_out, 0.7, width_img=width_out, no_grasps=5)
-	#if grasps == []:
-	#	print('es')
-	#imagen RGB
-        #fileim=fname+'.png'
-        #print(fileim)
-        #rgb_img = image.Image.from_file(fileim)
-        #rgb_img.img=cv2.resize(rgb_img.img, (640, 480), cv2.INTER_AREA)
 
 
         y_off=0
@@ -231,7 +207,7 @@ class image_converter:
         ax.set_title('quality')
         ax.axis('off')
         #plt.colorbar(plot)
-        
+
 
 	ax = fig.add_subplot(2, 2, 3)
 	plot = ax.imshow(width_out, cmap='hsv', vmin=0, vmax=150)
@@ -240,20 +216,15 @@ class image_converter:
 	ax.axis('off')
 	plt.colorbar(plot)
 
-        #ax = fig.add_subplot(2, 2, 4)
-        #plot = ax.imshow(ang_out, cmap='hsv', vmin=-np.pi / 2, vmax=np.pi / 2)
-        #grasps[0].plot(ax)
-        #ax.set_title('ang')
-        #ax.axis('off')
-        #plt.colorbar(plot)
 
-        ax = fig.add_subplot(2, 2, 4)
-        plot = ax.imshow(rgbcrop)
-        #for g in grasps:
-        #    g.plot(ax)
-
-        ax.set_title('RGB')
-        ax.axis('off')
+        # image = cv2.circle(rgbcrop, (120, 50), 20, (255, 0, 0), 2)
+        # ax = fig.add_subplot(2, 2, 4)
+        # plot = ax.imshow(rgbcrop)
+        # #for g in grasps:
+        # #    g.plot(ax)
+        #
+        # ax.set_title('RGB')
+        # ax.axis('off')
 
 	#fig.savefig('plot1.png')
 
@@ -273,8 +244,8 @@ class image_converter:
 	max_pixel = np.array([px, py])
         ang = ang_out[max_pixel[0], max_pixel[1]]
         width = width_out[max_pixel[0], max_pixel[1]]
-        print('qf: ',points_out[max_pixel[0], max_pixel[1]])
-        print('viejopixel: ',max_pixel[0], max_pixel[1])
+        # print('qf: ',points_out[max_pixel[0], max_pixel[1]])
+        # print('viejopixel: ',max_pixel[0], max_pixel[1])
         crop_size=400
 	y_off=0
         x_off=0
@@ -287,19 +258,13 @@ class image_converter:
         scale=1
         #grasps[0].center=[max_pixel[0]*1024/480, max_pixel[1]*1024/640]
         grasps[0].center=[max_pixel[0], max_pixel[1]]
-        print('Nuevopixel: ',max_pixel[0], max_pixel[1])
+        # print('Nuevopixel: ',max_pixel[0], max_pixel[1])
         grasps[0].angle=ang
         grasps[0].length=width*scale
         grasps[0].width=width*scale/2
         #pfinal = [x, y, z, ang, width, depth_center]
 
-        #ax = fig.add_subplot(2, 3, 6)
-        #plot = ax.imshow(rgbfin)
-        #grasps[0].plot(ax)
-        #ax.set_title('RGBo')
-        #ax.axis('off')
-        #ENCONTRAR VALORES REALES DE IMAGEN
-        #point_depth = depthfin[max_pixel[0], max_pixel[1]]
+
 
         point_depth = depthfin[px,py]
         x = (grasps[0].center[0] - cx)/(fx)*point_depth
@@ -318,16 +283,26 @@ class image_converter:
         print('width: ', width)
         print('rwidth: ', rwidth)
 
-        cmd_msg = Float32MultiArray()
-        cmd_msg.data = [x, y, z, ang, rwidth, point_depth]
-        cmd_pub.publish(cmd_msg)
+        punto=gmsg.Pose()
+        #invertidos porque si
+        punto.position.x=y
+        punto.position.y=x
+        punto.position.z=0
+        print punto
+
+        print convert_pose(punto,"cam","world")
+        
+        image = cv2.circle(rgbcrop, (144, 199), 20, (255, 0, 0), 2)
+        ax = fig.add_subplot(2, 2, 4)
+        plot = ax.imshow(rgbcrop)
+        #for g in grasps:
+        #    g.plot(ax)
+        ax.set_title('RGB')
+        ax.axis('off')
+
 
  	plt.show()
         #rospy.spin()
-
-
-
-
 
 if __name__=='__main__':
     image_converter(sys.argv)

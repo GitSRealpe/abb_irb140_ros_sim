@@ -439,7 +439,7 @@ def detect_grasps(q_img, ang_img, threshold, width_img=None, no_grasps=5):
     cont = 0
     for i in range(len(arr)):
         print(arr[i])
-        local_max = np.delete(local_max,arr[i]-cont,0)
+        # local_max = np.delete(local_max,arr[i]-cont,0)
         cont = cont+1
     #local_max = np.delete(local_max,i,0)
     print("localn", local_max)
