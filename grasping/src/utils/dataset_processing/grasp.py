@@ -434,12 +434,12 @@ def detect_grasps(q_img, ang_img, threshold, width_img=None, no_grasps=5):
     arr = []
     for i in range(len(local_max)):
         py,px = local_max[i]
-        if py <= 60 or py>=340 or px<=113 or px >= 288 :
-            arr = np.append(arr, i).astype(np.int)
+        #if py <= 60 or py>=340 or px<=113 or px >= 288 :
+        #    arr = np.append(arr, i).astype(np.int)
     cont = 0
     for i in range(len(arr)):
         print(arr[i])
-        # local_max = np.delete(local_max,arr[i]-cont,0)
+        #local_max = np.delete(local_max,arr[i]-cont,0)
         cont = cont+1
     #local_max = np.delete(local_max,i,0)
     print("localn", local_max)

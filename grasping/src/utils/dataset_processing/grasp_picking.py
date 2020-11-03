@@ -249,7 +249,7 @@ class GraspRectangle:
         return np.sqrt(dx ** 2 + dy ** 2)
 
     def polygon_coords(self, shape=None):
-	
+
 
         """
         :param shape: Output Shape
@@ -419,7 +419,7 @@ class Grasp:
 
 def detect_grasps(q_img, ang_img, threshold, width_img=None, no_grasps=5):
     """
-     
+
     Detect grasps in a GG-CNN output.
     :param q_img: Q image network output
     :param ang_img: Angle image network output
@@ -429,15 +429,15 @@ def detect_grasps(q_img, ang_img, threshold, width_img=None, no_grasps=5):
     """
     cajon = 2
     if  cajon == 1 or cajon == 4:
-	l1 =35 
-	l2 =225 
+	l1 =35
+	l2 =225
     elif cajon == 2 or cajon == 5:
 	l1 =55
-	l2 =260 
+	l2 =260
     elif cajon == 3 or cajon == 6:
-	l1 =45 
-	l2 =180 
-	 
+	l1 =45
+	l2 =180
+
     #local_max = peak_local_max(q_img, min_distance=20, threshold_abs=0.8, num_peaks=no_grasps)
     is_peak = peak_local_max(q_img, min_distance=10, threshold_abs=threshold, indices=False)
 
@@ -453,7 +453,7 @@ def detect_grasps(q_img, ang_img, threshold, width_img=None, no_grasps=5):
     cont = 0
     for i in range(len(arr)):
         print(arr[i])
-        local_max = np.delete(local_max,arr[i]-cont,0)
+        #local_max = np.delete(local_max,arr[i]-cont,0)
         cont = cont+1
     #local_max = np.delete(local_max,i,0)
     print("localn", local_max)

@@ -2,11 +2,11 @@
 import rospy
 import numpy as np
 import matplotlib.pyplot as plt
-
+import math
 from .grasp import GraspRectangles, detect_grasps
 
 
-def plot_output(grasp_width_img, depth_img, grasp_q_img, grasp_angle_img, no_grasps=1, rgb_img=None):
+def plot_output(grasp_width_img, depth_img, grasp_q_img, grasp_angle_img, grasps, rgbfin, crop_size, y_off, x_off):
     """
     Plot the output of a GG-CNN
     :param rgb_img: RGB Image
@@ -17,47 +17,58 @@ def plot_output(grasp_width_img, depth_img, grasp_q_img, grasp_angle_img, no_gra
     :param grasp_width_img: (optional) Width output of GG-CNN
     :return:
     """
-    gs = detect_grasps(grasp_q_img, grasp_angle_img, width_img=grasp_width_img, no_grasps=no_grasps)
 
-      
+
+    imh, imw = [480,640]
+    rgbcrop = rgbfin[(imh - crop_size) // 2 + y_off:(imh - crop_size)  // 2  + y_off, (imw - crop_size) // 2+x_off:(imw - crop_size) // 2 +x_off]
+
 
     fig = plt.figure(figsize=(10, 10))
-    #ax = fig.add_subplot(3, 2, 2)
-    ax = fig.add_subplot(1, 1, 1)
+    ax = fig.add_subplot(2, 2, 1)
     ax.imshow(depth_img, cmap='gray')
-    for g in gs:
+    for g in grasps:
         g.plot(ax)
     ax.set_title('Depth')
     ax.axis('off')
-    
 
-    #ax = fig.add_subplot(3, 2, 3)
-    #ax = fig.add_subplot(2, 2, 2)
-    #plot = ax.imshow(grasp_q_img, cmap='jet', vmin=0, vmax=1)
-    #ax.set_title('q')
-    #ax.axis('off')
+
+
+    ax = fig.add_subplot(2, 2, 2)
+    plot = ax.imshow(grasp_q_img, cmap='jet', vmin=0, vmax=1)
+    ax.set_title('quality')
+    ax.axis('off')
     #plt.colorbar(plot)
 
-    #ax = fig.add_subplot(3, 2, 3)
-    #ax = fig.add_subplot(2, 2, 3)
-    #plot = ax.imshow(grasp_width_img, cmap='hsv', vmin=0, vmax=150)
-    #ax.set_title('width')
-    #ax.axis('off')
-    #plt.colorbar(plot)
 
-    #ax = fig.add_subplot(3, 2, 4)
-    #ax = fig.add_subplot(2, 2, 4)
-    #plot = ax.imshow(grasp_angle_img, cmap='hsv', vmin=-np.pi / 2, vmax=np.pi / 2)
-    #ax.set_title('Angle')
-    #ax.axis('off')
-    #plt.colorbar(plot)
+    ax = fig.add_subplot(2, 2, 3)
+    plot = ax.imshow(grasp_width_img, cmap='hsv', vmin=0, vmax=150)
+    ax.set_title('width')
+    ax.axis('off')
+    plt.colorbar(plot)
 
-    #ax = fig.add_subplot(3, 2, 5)
-    #plot = ax.imshow(grasp_width_img, cmap='jet', vmin=-150, vmax=150)
-    #ax.set_title('Width')
-    #ax.axis('off')
-    #plt.colorbar(plot)
+    ax = fig.add_subplot(2, 2, 4)
+    plot = ax.imshow(grasp_angle_img, cmap='hsv', vmin=-np.pi / 2, vmax=np.pi / 2)
+    ax.set_title('Angle')
+    ax.axis('off')
+    plt.colorbar(plot)
     plt.show()
+
+    maxgrasps = []
+    for i in range(len(grasps)):
+                 maxgrasps.append(grasp_q_img[grasps[i].center])
+                 print('q',i, ': ',grasp_q_img[grasps[i].center[0], grasps[i].center[1]])
+                 print('pix',i, ': ', grasps[i].center[0], grasps[i].center[1])
+                 print('ang',i, ': ',grasp_angle_img[grasps[i].center[0], grasps[i].center[1]]*180/math.pi)
+                 print('width',i, ': ',grasp_width_img[grasps[i].center[0], grasps[i].center[1]])
+    print(len(grasps))
+    max_val=np.max(maxgrasps)
+    ind=[]
+    for i in range(len(grasps)):
+                if maxgrasps[i] == max_val:
+                    ind.append(i)
+    m = ind[0]
+    plt.show()
+    return m
 
 
 def calculate_iou_match(grasp_q, grasp_angle, ground_truth_bbs, no_grasps=1, grasp_width=None):

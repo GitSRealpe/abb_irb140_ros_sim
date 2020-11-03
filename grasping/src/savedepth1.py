@@ -30,8 +30,8 @@ crop_size=400
 MODEL_FILE = 'ggcnn2_093'
 rgbo = []
 rgbfin = []
-#MODEL_FILE = 'jacquard_86'
-#depthfin=cv2.resize(depthfin, (640, 480), interpolation = cv2.INTER_AREA)
+y_off=0
+x_off=0
 model = torch.load(MODEL_FILE, map_location='cpu')
 
 def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False, crop_y_offset=0):
@@ -39,17 +39,8 @@ def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False,
     print(depth.shape)
 
     with TimeIt('1'):
-       y_off=0
-       x_off=0
-       #depth_crop = depth[20+y_off:460+y_off,100+x_off:540+x_off]
-       #depth_crop = depth[170+x_off:470+x_off,90+y_off:390+y_off]
        depth_crop = depth[(imh - crop_size) // 2 + y_off:(imh - crop_size) // 2 + crop_size + y_off,
                            (imw - crop_size) // 2+x_off:(imw - crop_size) // 2 + crop_size+x_off]
-
-    print(depth_crop.shape)
-
-
-    # depth_nan_mask = np.isnan(depth_crop).astype(np.uint8)
 
     # Inpaint
     # OpenCV inpainting does weird things at the border.
@@ -71,7 +62,6 @@ def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False,
         # Back to original size and value range.
         depth_crop = depth_crop[1:-1, 1:-1]
         depth_crop = depth_crop * depth_scale
-    #print(depth_crop.shape)
 
     with TimeIt('5'):
         # Resize
@@ -86,17 +76,6 @@ def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False,
     else:
         return depth_crop
 
-
-#def get_depth(depthorig, rot=0, zoom=1.0):
-#        depth_img = image.DepthImage.from_tiff(depthorig)
-        #center, left, top = depth_img._get_crop_attrs(0)
-        #depth_img.rotate(0.8, [320,240])
-        #depth_img.crop((top, left), (min(480, top + self.output_size), min(640, left + self.output_size)))
-#        depth_img.normalise()
-        #depth_img.zoom(zoom)
-        #depth_img.zoom(0.5)
-#        return depth_img.img
-
 def predict(depth, process_depth=True, crop_size=crop_size, out_size=crop_size, depth_nan_mask=None, crop_y_offset=0, filters=(5.0, 2.0, 2.0)):
     if process_depth:
         depth, depth_nan_mask = process_depth_image(depth, crop_size, out_size=out_size, return_mask=True, crop_y_offset=0)
@@ -105,11 +84,10 @@ def predict(depth, process_depth=True, crop_size=crop_size, out_size=crop_size, 
     depth = np.clip((depth - depth.mean()), -1, 1)
     #depth = cv2.blur(depth,(5,5))
     depthn = depth.copy()
-    #y_init:y_fin,x_init:x_fin
-    depthn[120:280,73:330] = 0.00948*3
+    #Y,X
+    depthn[120:285,68:338] =depth[115,65]
     #depthn = ndimage.filters.gaussian_filter(depthn, 1)
-    depth = depth - depthn -0.00948*3
-    #print(depth.shape)
+    depth = depth - depthn -depth[115,65]
     depthT = torch.from_numpy(depth.reshape(1, 1, out_size, out_size).astype(np.float32)).to(device)
     with torch.no_grad():
         pred_out = model(depthT)
@@ -141,168 +119,103 @@ def predict(depth, process_depth=True, crop_size=crop_size, out_size=crop_size, 
 
     return points_out, ang_out, width_out, depth.squeeze()
 
+def graspdata(points_out, depthfin, grasps, m):
+    ROBOT_Z = 0
+    fx = 458.455478616934780
+    cx = 343.645038678435410
+    fy = 458.199272745572390
+    cy = 229.805975111304460
+    py,px=grasps[m].center
+    print("px,py: ",px,py)
+    ang = grasps[m].angle
+    print(ang)
+    width = grasps[m].width*2
+    print("width: ", width)
+    print('qf: ',points_out[py, px])
+    print('viejopixel: ', py, px)
+
+    pyn = py + (480 - crop_size) // 2+y_off
+    pxn = px + (640 - crop_size) // 2+x_off
+            #pxn = np.round(pxn).astype(np.int)
+            #pyn = np.round(pxn).astype(np.int)
+    grasps[0].center= pyn,pxn
+    print('Nuevopixel: ', pyn, pxn)
+
+    #fig = plt.figure(figsize=(10, 10))
+    #ax = fig.add_subplot(1, 1, 1)
+    #plot = ax.imshow(rgbfin)
+            #for g in grasps:
+    #grasps[0].plot(ax)
+    #ax.set_title('RGB')
+    #ax.axis('off')
+    #plt.show()
+        #ENCONTRAR VALORES REALES DE IMAGEN
+            #point_depth = depthfin[max_pixel[0], max_pixel[1]]
+    point_depth = depthfin[pyn,pxn]
+    x = (pxn - cx)/(fx)*point_depth
+    y = (pyn - cy)/(fy)*point_depth
+    z = point_depth
+    x1 = (px+width*math.cos(ang)/2 - cx)/(fx)*point_depth
+    y1 = (py+width*math.sin(ang)/2 - cy)/(fy)*point_depth
+    x2 = (px-width*math.cos(ang)/2 - cx)/(fx)*point_depth
+    y2 = (py-width*math.sin(ang)/2 - cy)/(fy)*point_depth
+
+    rwidth =math.sqrt(math.pow((x1-x2),2)+math.pow((y1-y2),2))
+    print('x: ', x*100)
+    print('y: ', y*100)
+    print('z: ', z)
+    print('ang: ', ang*180/math.pi)
+    print('width: ', width)
+    print('rwidth: ', rwidth)
+
+
+    return x,y,z, ang, rwidth
+
 class image_converter:
 
     def __init__(self, args):
-        print "aquip"
+
         self.index = 0
         if len(sys.argv) > 1:
             self.index = int(sys.argv[1])
         rospy.init_node('save_img')
         bridge = CvBridge()
-
-	crop_size=400
         #while not rospy.is_shutdown():
-        raw_input()
-
+        #raw_input()
         #color_sub = rospy.Subscriber("/camera/color/image_raw",Image)
+        cmd_pub = rospy.Publisher('ggcnn/out/command', Float32MultiArray, queue_size=1)
         print "depth"
         rgbo = rospy.wait_for_message('/camera/color/image_raw', Image)
-	#depth_sub = rospy.Subscriber("/camera/depth/image_raw",Image)
         print "depth"
-	cmd_pub = rospy.Publisher('ggcnn/out/command1', Float32MultiArray, queue_size=1)
-
-	#rgbo = rospy.wait_for_message('/camera/color/image_raw1', Image)
         deptho = rospy.wait_for_message('/camera/depth/image_raw', Image)
     #    rgbo = rospy.wait_for_message('/camera/rgb/image_color', Image)
+        depthfin = bridge.imgmsg_to_cv2(deptho)
         rgbfin = bridge.imgmsg_to_cv2(rgbo)
-	depthfin = bridge.imgmsg_to_cv2(deptho)
-
-        rgbfin1= cv2.cvtColor(rgbfin, cv2.COLOR_BGR2RGB)
-        cv2.imwrite('rgb.png', rgbfin1)
-
-        ROBOT_Z = 0
-        fx = 458.455478616934780
-        cx = 343.645038678435410
-        fy = 458.199272745572390
-        cy = 229.805975111304460
+        depthfin = depthfin/2
+        #rgbfin1= cv2.cvtColor(rgbfin, cv2.COLOR_BGR2RGB)
+        #cv2.imwrite('rgb.png', rgbfin1)
         #MODEL_FILE = 'training2_084'
-
         points_out, ang_out, width_out, depth = predict(depthfin)
-
         grasps = grasp.detect_grasps(points_out, ang_out, 0.7, width_img=width_out, no_grasps=5)
 
+        m = evaluation1.plot_output(width_out, depth, points_out, ang_out, grasps, rgbfin, crop_size, y_off, x_off)
 
-        y_off=0
-        x_off=0
-        crop_size=400
-        imh, imw = [480,640]
-        rgbcrop = rgbfin[(imh - crop_size) // 2 + y_off:(imh - crop_size) // 2 + crop_size + y_off,
-                           (imw - crop_size) // 2+x_off:(imw - crop_size) // 2 + crop_size+x_off]
-
-
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(2, 2, 1)
-        ax.imshow(depth, cmap='gray')
-        for g in grasps:
-            g.plot(ax)
-        ax.set_title('Depth')
-        ax.axis('off')
-
-
-        ax = fig.add_subplot(2, 2, 2)
-        plot = ax.imshow(points_out, cmap='jet', vmin=0, vmax=1)
-	#grasps[0].plot(ax)
-	#grasps[1].plot(ax)
-        ax.set_title('quality')
-        ax.axis('off')
-        #plt.colorbar(plot)
-
-
-	ax = fig.add_subplot(2, 2, 3)
-	plot = ax.imshow(width_out, cmap='hsv', vmin=0, vmax=150)
-	grasps[0].plot(ax)
-	ax.set_title('width')
-	ax.axis('off')
-	plt.colorbar(plot)
-
-
-        # image = cv2.circle(rgbcrop, (120, 50), 20, (255, 0, 0), 2)
-        # ax = fig.add_subplot(2, 2, 4)
-        # plot = ax.imshow(rgbcrop)
-        # #for g in grasps:
-        # #    g.plot(ax)
-        #
-        # ax.set_title('RGB')
-        # ax.axis('off')
-
-	#fig.savefig('plot1.png')
-
-	#gr=GraspRectangles.load_from_array(grasps)
-	#evaluation1.plot_output(width_out, depth, points_out , ang_out, no_grasps=1, rgb_img=None)
-	#ENCONTRAR LA PROFUNDIDAD EN LA IMAGEN ORIGINAL
-        for i in range(len(grasps)):
-                 print('q',i, ': ',points_out[grasps[i].center[0], grasps[i].center[1]])
-                 print('pix',i, ': ', grasps[i].center[0], grasps[i].center[1])
-                 print('ang',i, ': ',ang_out[grasps[i].center[0], grasps[i].center[1]]*180/math.pi)
-                 print('width',i, ': ',width_out[grasps[i].center[0], grasps[i].center[1]])
-        print(len(grasps))
-
-	#PIXEL CON VALOR MAXIMO
-        #max_pixel = np.array(np.unravel_index(np.argmax(points_out), points_out.shape))
-        px,py=grasps[0].center
-	max_pixel = np.array([px, py])
-        ang = ang_out[max_pixel[0], max_pixel[1]]
-        width = width_out[max_pixel[0], max_pixel[1]]
-        # print('qf: ',points_out[max_pixel[0], max_pixel[1]])
-        # print('viejopixel: ',max_pixel[0], max_pixel[1])
-        crop_size=400
-	y_off=0
-        x_off=0
-        #max_pixel = ((np.array(max_pixel) / 440.0 * crop_size) + np.array([(480 - crop_size)//2+y_off, (640 - crop_size) // 2+x_off]))
-        max_pixel = ((np.array(max_pixel)) + np.array([(480 - crop_size)//2+y_off, (640 - crop_size) // 2+x_off]))
-        max_pixel = np.round(max_pixel).astype(np.int)
-
-
-        #scale=1024/480
-        scale=1
-        #grasps[0].center=[max_pixel[0]*1024/480, max_pixel[1]*1024/640]
-        grasps[0].center=[max_pixel[0], max_pixel[1]]
-        # print('Nuevopixel: ',max_pixel[0], max_pixel[1])
-        grasps[0].angle=ang
-        grasps[0].length=width*scale
-        grasps[0].width=width*scale/2
-        #pfinal = [x, y, z, ang, width, depth_center]
-
-
-
-        point_depth = depthfin[px,py]
-        x = (grasps[0].center[0] - cx)/(fx)*point_depth
-        y = (grasps[0].center[1] - cy)/(fy)*point_depth
-        z = point_depth
-        x1 = (grasps[0].center[0]+width*math.cos(ang)/2 - cx)/(fx)*point_depth
-        y1 = (grasps[0].center[1]+width*math.sin(ang)/2 - cy)/(fy)*point_depth
-        x2 = (grasps[0].center[0]-width*math.cos(ang)/2 - cx)/(fx)*point_depth
-        y2 = (grasps[0].center[1]-width*math.sin(ang)/2 - cy)/(fy)*point_depth
-
-        rwidth =math.sqrt(math.pow((x1-x2),2)+math.pow((y1-y2),2))
-        print('x: ', x)
-        print('y: ', y)
-        print('z: ', z)
-        print('ang: ', ang*180/math.pi)
-        print('width: ', width)
-        print('rwidth: ', rwidth)
+        x, y, z, ang, rwidth = graspdata(points_out, depthfin, grasps, m)
 
         punto=gmsg.Pose()
         #invertidos porque si
-        punto.position.x=y
-        punto.position.y=x
+        punto.position.x=x
+        punto.position.y=y
         punto.position.z=0
         print punto
 
         print convert_pose(punto,"cam","world")
-        
-        image = cv2.circle(rgbcrop, (144, 199), 20, (255, 0, 0), 2)
-        ax = fig.add_subplot(2, 2, 4)
-        plot = ax.imshow(rgbcrop)
-        #for g in grasps:
-        #    g.plot(ax)
-        ax.set_title('RGB')
-        ax.axis('off')
+
+	#fig.savefig('plot1.png')
+	#ENCONTRAR LA PROFUNDIDAD EN LA IMAGEN ORIGINAL
+	#PIXEL CON VALOR MAXIMO
 
 
- 	plt.show()
-        #rospy.spin()
 
 if __name__=='__main__':
     image_converter(sys.argv)
