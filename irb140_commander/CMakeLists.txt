@@ -53,11 +53,14 @@ include_directories(SYSTEM ${THIS_PACKAGE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${E
 include_directories(${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
 
+#chmod +x mypythonscript.py para que sea ejecutable
 catkin_install_python(PROGRAMS
   scripts/talker.py
   scripts/listener.py
   scripts/pose_commander.py
   scripts/joint_commander.py
+  scripts/path_pub.py
+  scripts/path_sub.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -83,3 +86,7 @@ install(TARGETS robot_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 add_executable(pose_commander src/pose_commander.cc)
 target_link_libraries(pose_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS pose_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(path_commander src/path_commander.cc)
+target_link_libraries(path_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS path_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

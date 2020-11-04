@@ -191,11 +191,11 @@ class image_converter:
     #    rgbo = rospy.wait_for_message('/camera/rgb/image_color', Image)
         depthfin = bridge.imgmsg_to_cv2(deptho)
         rgbfin = bridge.imgmsg_to_cv2(rgbo)
-        depthfin = depthfin/2
+        depthfin1 = depthfin/2
         #rgbfin1= cv2.cvtColor(rgbfin, cv2.COLOR_BGR2RGB)
         #cv2.imwrite('rgb.png', rgbfin1)
         #MODEL_FILE = 'training2_084'
-        points_out, ang_out, width_out, depth = predict(depthfin)
+        points_out, ang_out, width_out, depth = predict(depthfin1)
         grasps = grasp.detect_grasps(points_out, ang_out, 0.7, width_img=width_out, no_grasps=5)
 
         m = evaluation1.plot_output(width_out, depth, points_out, ang_out, grasps, rgbfin, crop_size, y_off, x_off)
@@ -210,11 +210,6 @@ class image_converter:
         print punto
 
         print convert_pose(punto,"cam","world")
-
-	#fig.savefig('plot1.png')
-	#ENCONTRAR LA PROFUNDIDAD EN LA IMAGEN ORIGINAL
-	#PIXEL CON VALOR MAXIMO
-
 
 
 if __name__=='__main__':
