@@ -24,16 +24,20 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   tf2_eigen
   tf2_geometry_msgs
+  geometry_msgs
   message_generation
 )
 
 add_message_files(
   FILES
+  PoseRPY.msg
+  RPY.msg
   Num.msg
 )
 
 generate_messages(
  DEPENDENCIES
+ geometry_msgs
  std_msgs
 )
 
