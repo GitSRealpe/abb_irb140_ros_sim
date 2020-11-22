@@ -75,20 +75,14 @@ if(NOT EIGEN3_INCLUDE_DIRS)
   set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
 endif()
 
-add_executable(test_commander src/test_commander.cpp)
-target_link_libraries(test_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS test_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
 add_executable(joint_commander src/joint_commander.cpp)
 target_link_libraries(joint_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_dependencies(joint_commander irb140_commander_generate_messages_cpp)
 install(TARGETS joint_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
-add_executable(robot_commander src/robot_commander.cpp)
-target_link_libraries(robot_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS robot_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 add_executable(pose_commander src/pose_commander.cc)
 target_link_libraries(pose_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_dependencies(pose_commander irb140_commander_generate_messages_cpp)
 install(TARGETS pose_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 add_executable(path_commander src/path_commander.cc)
