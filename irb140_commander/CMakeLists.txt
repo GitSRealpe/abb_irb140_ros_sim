@@ -65,6 +65,7 @@ catkin_install_python(PROGRAMS
   scripts/joint_commander.py
   scripts/path_pub.py
   scripts/path_sub.py
+  scripts/send_PoseRPY.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
