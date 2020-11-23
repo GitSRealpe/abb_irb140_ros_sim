@@ -19,6 +19,8 @@ class MoveEnable{
     void cmdCallback(const irb140_commander::PoseRPY::ConstPtr& msg);
 };
 
+ros::Publisher pub;
+
   void MoveEnable::cmdCallback(const irb140_commander::PoseRPY::ConstPtr& msg){
     ROS_INFO("Pose recibida:");
     std::cout << msg->position <<"\n";
@@ -58,9 +60,16 @@ class MoveEnable{
     ROS_INFO_NAMED("pose_commander", "Visualizing plan 1 (pose goal) %s", success ? "Exito" : "FAILED");
     //actually move the real robot
     move_group.move();
+    std::cout<<"completado"<<"\n";
     move_group.clearPoseTargets();
 
+    std_msgs::String aviso;
+    aviso.data = "done";
+    ROS_INFO("%s", aviso.data.c_str());
+    pub.publish(aviso);
+
   }
+
 
 int main(int argc, char** argv)
 {
@@ -75,6 +84,7 @@ int main(int argc, char** argv)
   MoveEnable mv;
   ROS_INFO("Esperando PoseRPY en topico robot_commander/cmd_pose...");
   ros::Subscriber sub = node_handle.subscribe("robot_commander/cmd_pose", 1000, &MoveEnable::cmdCallback, &mv);
+  pub = node_handle.advertise<std_msgs::String>("robot_commander/pose_done", 1000);
 
   ros::waitForShutdown();
   return 0;
