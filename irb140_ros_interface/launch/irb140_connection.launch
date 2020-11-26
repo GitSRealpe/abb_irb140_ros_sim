@@ -1,0 +1,16 @@
+<launch>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find irb140_sim)/urdf/irb140.xacro' cam:=0" />
+  <rosparam command="load" file="$(find irb140_ros_interface)/config/joint_names.yaml" />
+
+  <include file="$(find abb_driver)/launch/robot_interface.launch">
+    <arg name="robot_ip" value="169.254.145.7"/>
+  </include>
+
+
+	<!-- combine joint values -->
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+	<!-- Show in Rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find irb140_sim)/config/rviz/rviz_config.rviz"/>
+
+</launch>

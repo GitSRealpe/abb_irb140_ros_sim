@@ -17,7 +17,7 @@ hardware_interface:
     - joint_6
   sim_control_mode: 0  # 0: position, 1: velocity
 # Publish all joint states
-# Crea
+# Creates the /joint_states topic necessary in ROS
 controller_list:
   - name: irb_140/arm_controller
     action_ns: follow_joint_trajectory

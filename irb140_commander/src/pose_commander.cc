@@ -7,30 +7,25 @@
 #include <moveit_visual_tools/moveit_visual_tools.h>
 
 #include "std_msgs/String.h"
-#include "irb140_commander/Num.h"
+#include "irb140_commander/PoseRPY.h"
 #include <sstream>
 #include "iostream"
 
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
 class MoveEnable{
   public:
-    void cmdCallback(const geometry_msgs::Pose::ConstPtr& msg);
+    void cmdCallback(const irb140_commander::PoseRPY::ConstPtr& msg);
 };
 
-  void MoveEnable::cmdCallback(const geometry_msgs::Pose::ConstPtr& msg){
+ros::Publisher pub;
+
+  void MoveEnable::cmdCallback(const irb140_commander::PoseRPY::ConstPtr& msg){
     ROS_INFO("Pose recibida:");
     std::cout << msg->position <<"\n";
-    std::cout << msg->orientation<<"\n";
-    std::cout << "Marco de referencia: "<<"\n";
+    std::cout << msg->rpy<<"\n";
     std::cout << "ejecutando comando..."<<"\n";
-
-    // Visualization
-    namespace rvt = rviz_visual_tools;
-    moveit_visual_tools::MoveItVisualTools visual_tools("base_link");
-    visual_tools.deleteAllMarkers();
-    // RViz provides many types of markers, in this demo we will use text, cylinders, and spheres
-    Eigen::Affine3d text_pose = Eigen::Affine3d::Identity();
-    text_pose.translation().z() = 1;
-    visual_tools.publishText(text_pose, "Pose commander", rvt::WHITE, rvt::XLARGE);
 
     moveit::planning_interface::MoveGroupInterface move_group("irb140_arm");
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
@@ -40,14 +35,21 @@ class MoveEnable{
     ROS_INFO_NAMED("pose_commander", "Reference frame: %s", move_group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("pose_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());
 
-    // Planning to a Pose goal
-    // ^^^^^^^^^^^^^^^^^^^^^^^
-    // We can plan a motion for this group to a desired pose for the
-    // end-effector.
+    tf2::Quaternion q;
+    geometry_msgs::Quaternion q_msg;
+    q.setRPY(msg->rpy.roll,msg->rpy.pitch,msg->rpy.yaw);  // Create this quaternion from roll/pitch/yaw (in radians)
+    q.normalize();
+    q_msg = tf2::toMsg(q);
+    std::cout<<q_msg<<"\n";  // Print the quaternion components (0,0,0,1)
+
     geometry_msgs::Pose target_pose;
     target_pose.position=msg->position;
-    target_pose.orientation=msg->orientation;
-    move_group.setPoseTarget(target_pose);
+    target_pose.orientation=q_msg;
+    move_group.setPoseTarget(target_pose,"");
+    std::cout <<move_group.getPoseTarget("")<<"\n";
+
+    move_group.setNumPlanningAttempts(10);
+    //move_group.setGoalTolerance(0.01);
 
     // Now, we call the planner to compute the plan and visualize it.
     // Note that we are just planning, not asking move_group
@@ -58,8 +60,16 @@ class MoveEnable{
     ROS_INFO_NAMED("pose_commander", "Visualizing plan 1 (pose goal) %s", success ? "Exito" : "FAILED");
     //actually move the real robot
     move_group.move();
+    std::cout<<"completado"<<"\n";
+    move_group.clearPoseTargets();
+
+    std_msgs::String aviso;
+    aviso.data = "done";
+    ROS_INFO("%s", aviso.data.c_str());
+    pub.publish(aviso);
 
   }
+
 
 int main(int argc, char** argv)
 {
@@ -72,8 +82,9 @@ int main(int argc, char** argv)
   moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);
 
   MoveEnable mv;
-  ROS_INFO("Esperando Pose en topico robot_commander/cmd_pose...");
+  ROS_INFO("Esperando PoseRPY en topico robot_commander/cmd_pose...");
   ros::Subscriber sub = node_handle.subscribe("robot_commander/cmd_pose", 1000, &MoveEnable::cmdCallback, &mv);
+  pub = node_handle.advertise<std_msgs::String>("robot_commander/pose_done", 1000);
 
   ros::waitForShutdown();
   return 0;

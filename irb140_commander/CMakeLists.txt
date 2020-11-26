@@ -24,16 +24,20 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   tf2_eigen
   tf2_geometry_msgs
+  geometry_msgs
   message_generation
 )
 
 add_message_files(
   FILES
+  PoseRPY.msg
+  RPY.msg
   Num.msg
 )
 
 generate_messages(
  DEPENDENCIES
+ geometry_msgs
  std_msgs
 )
 
@@ -41,7 +45,7 @@ catkin_package(
   #INCLUDE_DIRS include
   LIBRARIES irb140_commander
   CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
-  DEPENDS system_lib
+  #DEPENDS system_lib
 )
 
 include_directories(
@@ -53,11 +57,15 @@ include_directories(SYSTEM ${THIS_PACKAGE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${E
 include_directories(${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
 
+#chmod +x mypythonscript.py para que sea ejecutable
 catkin_install_python(PROGRAMS
   scripts/talker.py
   scripts/listener.py
   scripts/pose_commander.py
   scripts/joint_commander.py
+  scripts/path_pub.py
+  scripts/path_sub.py
+  scripts/send_PoseRPY.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -68,18 +76,16 @@ if(NOT EIGEN3_INCLUDE_DIRS)
   set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
 endif()
 
-add_executable(test_commander src/test_commander.cpp)
-target_link_libraries(test_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS test_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
 add_executable(joint_commander src/joint_commander.cpp)
 target_link_libraries(joint_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_dependencies(joint_commander irb140_commander_generate_messages_cpp)
 install(TARGETS joint_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
-add_executable(robot_commander src/robot_commander.cpp)
-target_link_libraries(robot_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS robot_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 add_executable(pose_commander src/pose_commander.cc)
 target_link_libraries(pose_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_dependencies(pose_commander irb140_commander_generate_messages_cpp)
 install(TARGETS pose_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(path_commander src/path_commander.cc)
+target_link_libraries(path_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS path_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

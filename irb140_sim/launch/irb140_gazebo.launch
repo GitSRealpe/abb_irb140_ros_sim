@@ -10,7 +10,7 @@
 		</include>
 
 		<!--Cargar robot-->
-		<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find irb140_sim)/urdf/irb140.xacro'" />
+		<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find irb140_sim)/urdf/irb140.xacro' cam:=1" />
 		<arg name="x" default="0"/>
 		<arg name="y" default="0"/>
 		<arg name="z" default="0"/>
@@ -27,7 +27,8 @@
 					respawn="false" output="screen" ns="/irb_140"
 					args="--namespace=/irb_140
 					joint_state_controller
-					arm_controller"/>
+					arm_controller
+					gripper_controller"/>
 
 		<!-- convert joint states to TF transforms for rviz, etc -->
 		<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
@@ -35,6 +36,4 @@
 			<remap from="/joint_states" to="/irb_140/joint_states" />
 		</node>
 
-		<!-- <node pkg="tf" type="static_transform_publisher" name="cam_calib_tf" args="0 0 0 0 0 0 cam_link cam_calib 100" /> -->
-		<!-- rosrun tf static_transform_publisher 0 0 0 0 1.57 0 0 cam_link cam_calib 1 -->
 </launch>

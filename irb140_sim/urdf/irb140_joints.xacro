@@ -25,7 +25,7 @@
     <parent link="link_1"/>
     <child link="link_2"/>
     <axis xyz="0 1 0"/>
-    <limit effort="1000" lower="-1.7453" upper="1.7453" velocity="2.618"/>
+    <limit effort="1000" lower="-0.7853" upper="1.5708" velocity="2.618"/>
   </joint>
   <transmission name="trans_joint_2">
 		<type>transmission_interface/SimpleTransmission</type>
@@ -43,7 +43,7 @@
     <parent link="link_2"/>
     <child link="link_3"/>
     <axis xyz="0 1 0"/>
-    <limit effort="1000" lower="-2.4434" upper="2.4434" velocity="2.618"/>
+    <limit effort="1000" lower="-2.4434" upper="0.8726" velocity="2.618"/>
   </joint>
   <transmission name="trans_joint_3">
 		<type>transmission_interface/SimpleTransmission</type>
@@ -109,24 +109,34 @@
 			<mechanicalReduction>1</mechanicalReduction>
 		</actuator>
   </transmission>
-	<!--cam_joint-->
-	<joint name="cam_joint" type="fixed">
-    <parent link="link_4"/>
-    <child link="cam_link"/>
-    <origin rpy="0 0 0" xyz="0 0 0.1"/>
-  </joint>
-	<joint name="cam_depth_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="-1.57 0 -1.57 "/>
-    <parent link="cam_link"/>
-    <child link="cam_depth_link"/>
-  </joint>
 
-  <link name="cam_depth_link"></link>
+	<xacro:if value="${cam}">
+		<!--cam_joint-->
+		<joint name="cam_joint" type="fixed">
+	    <parent link="link_4"/>
+	    <child link="cam_link"/>
+	    <origin rpy="0 0 0" xyz="0 0 0.1"/>
+	  </joint>
+		<!-- fix para la nube de puntos -->
+		<joint name="cam_depth_joint" type="fixed">
+	    <origin xyz="0 0 0" rpy="-1.57 0 -1.57 "/>
+	    <parent link="cam_link"/>
+	    <child link="cam_depth_link"/>
+	  </joint>
+	  <link name="cam_depth_link"></link>
+	</xacro:if>
+
 	<!--tool_joint-->
-	<!-- <joint name="joint_6-tool0" type="fixed">
+	<joint name="joint_6-tool0" type="fixed">
     <parent link="link_6"/>
-    <child link="tool0"/>
+    <child link="gripper_body"/>
     <origin rpy="0 1.57 0" xyz="0 0 0"/>
-  </joint> -->
-
+  </joint>
+	<!-- tcp link -->
+	<link name="tcp_link"/>
+	<joint name="tcp_joint" type="fixed">
+		<parent link="link_6"/>
+		<child link="tcp_link"/>
+		<origin rpy="0 0 0" xyz="0.20 0 0"/>
+	</joint>
 </robot>
