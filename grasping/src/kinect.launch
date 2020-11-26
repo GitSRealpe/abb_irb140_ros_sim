@@ -1,0 +1,3 @@
+<launch>
+		<node pkg="tf" type="static_transform_publisher" name="world" args="10 0 0 0 0 0 world ref1 100" />
+</launch>

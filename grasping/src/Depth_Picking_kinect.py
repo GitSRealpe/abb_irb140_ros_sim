@@ -21,7 +21,6 @@ from sensor_msgs.msg import Image, CameraInfo
 from std_msgs.msg import Float32MultiArray
 from models.common import post_process_output
 from utils.timeit import TimeIt
-from helpers.transforms import *
 
 device = torch.device('cpu')
 
@@ -29,7 +28,7 @@ device = torch.device('cpu')
 MODEL_FILE = 'ggcnn2_093'
 rgbo = []
 rgbfin = []
-cajon =1
+cajon = 8
 if cajon==1 or cajon==4 :
    crop_size=300
    y_off=50
@@ -54,6 +53,15 @@ elif cajon==3 or cajon==6:
    Dy=145
    Dx=225
    robot =[1.57, -0.70, 0.93, 0, 0.48, 0.02]
+elif cajon==8:
+   crop_size=280
+   y_off=50
+   x_off=0
+   iy=75
+   ix=40
+   Dy=160
+   Dx=180
+
 
 #MODEL_FILE = 'jacquard_86'
 #depthfin=cv2.resize(depthfin, (640, 480), interpolation = cv2.INTER_AREA)
@@ -66,14 +74,12 @@ def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False,
     print(depth.shape)
 
     with TimeIt('1'):
-
        fig = plt.figure(figsize=(10, 10))
        ax = fig.add_subplot(1, 1, 1)
        ax.imshow(depth, cmap='gray')
-       ax.set_title('original')
+       ax.set_title('1')
        ax.axis('off')
        plt.show()
-
        #depth_crop = depth[20+y_off:460+y_off,100+x_off:540+x_off]
        #depth_crop = depth[170+x_off:470+x_off,90+y_off:390+y_off]
        depth_crop1 = depth[(imh - crop_size) // 2 + y_off:(imh - crop_size) // 2 + crop_size + y_off,
@@ -84,18 +90,27 @@ def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False,
            #depth = depth - depthn -depth[240,150]
        elif cajon==2 or cajon==5 :
            depth_crop = depth_crop1[iy:iy+Dy,0:320]
-           depth_crop = depth_crop1
        elif cajon==3 or cajon==6:
            depth_crop = depth_crop1[iy:iy+Dy,0:320]
-           #depth_crop = depth_crop1
+       elif cajon==8:
+           depth_crop = depth_crop1[iy:iy+Dy,ix:ix+Dx]
+           depth_crop = depth_crop.copy()
 
 
+       for i in range(Dy):
+            for j in range(Dx):
+                if depth_crop[i,j] == 0:
+                    depth_crop[i,j] =400
+
+       depth_crop = cv2.normalize(depth_crop.astype('float32'), None, 1.0, -1.0, cv2.NORM_MINMAX)
+       depth_crop =depth_crop/7
        fig = plt.figure(figsize=(10, 10))
        ax = fig.add_subplot(1, 1, 1)
        ax.imshow(depth_crop, cmap='gray')
-       ax.set_title('crop')
+       ax.set_title('1')
        ax.axis('off')
        plt.show()
+
     # depth_nan_mask = np.isnan(depth_crop).astype(np.uint8)
 
     # Inpaint
@@ -105,14 +120,10 @@ def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False,
         depth_nan_mask = np.isnan(depth_crop).astype(np.uint8)
 
 
+
     with TimeIt('3'):
         depth_crop[depth_nan_mask==1] = 0
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(1, 1, 1)
-        ax.imshow(depth_crop, cmap='gray')
-        ax.set_title('mask')
-        ax.axis('off')
-        plt.show()
+
 
 
 
@@ -130,11 +141,12 @@ def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False,
         depth_crop = depth_crop * depth_scale
 
         fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(1, 2, 1)
+        ax = fig.add_subplot(1, 1, 1)
         ax.imshow(depth_crop, cmap='gray')
-        ax.set_title('inpainting')
+        ax.set_title('51')
         ax.axis('off')
-        plt.show()    #print(depth_crop.shape)
+        plt.show()
+    #print(depth_crop.shape)
 
 
     with TimeIt('5'):
@@ -144,10 +156,9 @@ def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False,
         fig = plt.figure(figsize=(10, 10))
         ax = fig.add_subplot(1, 1, 1)
         ax.imshow(depth_crop, cmap='gray')
-        ax.set_title('resize')
+        ax.set_title('5')
         ax.axis('off')
         plt.show()
-
 
     if return_mask:
         with TimeIt('6'):
@@ -174,9 +185,14 @@ def predict(depth, process_depth=True, crop_size=crop_size, out_size=crop_size, 
         depth, depth_nan_mask = process_depth_image(depth, crop_size, out_size=out_size, return_mask=True, crop_y_offset=0)
 
     # Inference
-    depth = np.clip((depth - depth.mean()), -1, 1)
+    #depth = np.clip((depth - depth.mean()), -1, 1)
 
-
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.imshow(depth, cmap='gray')
+    ax.set_title('clip')
+    ax.axis('off')
+    plt.show()
 
     #depth = cv2.blur(depth,(5,5))
     depthn = depth.copy()
@@ -205,7 +221,7 @@ def predict(depth, process_depth=True, crop_size=crop_size, out_size=crop_size, 
     sin_out = pred_out[2].cpu().numpy().squeeze()
     ang_out = np.arctan2(sin_out, cos_out) / 2.0
 
-    width_out = pred_out[3].cpu().numpy().squeeze() * 120.0  # Scaled 0-150:0-1
+    width_out = pred_out[3].cpu().numpy().squeeze() * 150.0  # Scaled 0-150:0-1
 
     # Filter the outputs.
 
@@ -242,7 +258,7 @@ def graspdata(points_out, depthfin, grasps, m):
     #max_pixel = ((np.array(max_pixel) / 300.0 * crop_size) + np.array([(640 - crop_size)//2+y_off, (480 - crop_size) // 2+x_off]))
     for g in grasps:
         pyn = g.center[0]*Dy/crop_size + (480 - crop_size) // 2+y_off+iy
-        pxn = g.center[1]*Dx/crop_size + (640 - crop_size) // 2+x_off
+        pxn = g.center[1]*Dx/crop_size + (640 - crop_size) // 2+x_off+ix
         g.center = [pyn,pxn]
         l1 = g.length*np.cos(ang)*Dx/crop_size
         l2 = g.length*np.sin(ang)*Dy/crop_size
@@ -290,11 +306,12 @@ class image_converter:
         if len(sys.argv) > 1:
             self.index = int(sys.argv[1])
         print("hola")
+        rospy.init_node('save_img')
         print("hola")
         bridge = CvBridge()
         #while not rospy.is_shutdown():
         #raw_input()
-        rgbo = rospy.wait_for_message('/camera/color/image_raw', Image)
+        rgbo = rospy.wait_for_message('/camera/rgb/image_raw', Image)
         print("rgb")
         cmd_pub = rospy.Publisher('ggcnn/out/command', Float32MultiArray, queue_size=1)
         deptho = rospy.wait_for_message('/camera/depth/image_raw', Image)
@@ -316,7 +333,12 @@ class image_converter:
            y_off=50
            x_off=0
            depthfin = depthfin1/5
-           #cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB, cv_image)
+        elif cajon==8:
+           crop_size=280
+           y_off=50
+           x_off=0
+           depthfin = depthfin1
+           cv2.cvtColor(rgbfin, cv2.COLOR_BGR2RGB, rgbfin)
            #cv2.imwrite('/home/mateo/catkin_ws/src/grasping/src/img1.png', cv_image)#*255)
 
         points_out, ang_out, width_out, depth = predict(depthfin, crop_size=crop_size)
@@ -329,16 +351,16 @@ class image_converter:
  	    w = g.width/2*np.sin(a)
             h = g.length/2*np.cos(a)
             corners=[cy+w+h,cy+w-h,cy-w+h,cy-w-h]
-	    if cajon == 1:
-		limit=225
-	    elif cajon == 2:
-		limit=255
-	    elif cajon == 3:
-		limit=210
-	    print("corners: ", corners)
-	    if	corners[0]>=limit or corners[1]>=limit or corners[2]>=limit or corners[3]>=limit:
-	        g.angle = g.angle
-    	    print("coordenadas: ",corners)
+	    #if cajon == 1:
+		#limit=225
+	    #elif cajon == 2:
+		#limit=255
+	    #elif cajon == 3:
+		#limit=210
+	    #print("corners: ", corners)
+	    #if	corners[0]>=limit or corners[1]>=limit or corners[2]>=limit or corners[3]>=limit:
+	        #g.angle = g.angle
+    	    #print("coordenadas: ",corners)
 
         m = evaluation1.plot_output(width_out, depth, points_out, ang_out, grasps, depthfin, crop_size, y_off, x_off)
 
@@ -348,29 +370,25 @@ class image_converter:
         cmd_msg.data = [x, y, z, ang, rwidth]
         cmd_pub.publish(cmd_msg)
 
-        punto=gmsg.Pose()
-        #invertidos porque si
-        punto.position.x=z
-        punto.position.y=-x
-        punto.position.z=-y
-        print punto
-
-        print convert_pose(punto,"cam_link","world")
-
         fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(1, 1, 1)
-        ax.imshow(rgbfin)
+        ax = fig.add_subplot(1, 2, 1)
+        ax.imshow(depthfin1, cmap='gray')
         for g in grasps:
             g.plot(ax)
-        ax.set_title('rgb')
+        ax.set_title('Depth')
         ax.axis('off')
+
+        ax = fig.add_subplot(1, 2, 2)
+        ax.imshow(rgbfin)
+        ax.set_title('RGB')
+        ax.axis('off')
+
         plt.show()
+        #rospy.spin()
 
 
 
 
 
 if __name__=='__main__':
-    rospy.init_node('save_img')
     image_converter(sys.argv)
-    #rospy.spin()

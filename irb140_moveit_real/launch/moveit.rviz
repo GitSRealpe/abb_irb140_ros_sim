@@ -1,12 +1,13 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 84
+    Help Height: 75
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Trajectory1
+        - /TF1
+        - /TF1/Frames1
       Splitter Ratio: 0.742560029
-    Tree Height: 837
+    Tree Height: 411
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -179,7 +180,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-      Loop Animation: true
+      Loop Animation: false
       Name: Trajectory
       Robot Alpha: 0.5
       Robot Color: 150; 50; 150
@@ -190,6 +191,120 @@ Visualization Manager:
       State Display Time: 0.05 s
       Trail Step Size: 1
       Trajectory Topic: /move_group/display_planned_path
+      Value: true
+    - Class: rviz/Camera
+      Enabled: true
+      Image Rendering: background and overlay
+      Image Topic: /camera/rgb/image_color
+      Name: Camera
+      Overlay Alpha: 1
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+      Visibility:
+        Grid: true
+        PointCloud2: true
+        RobotModel: true
+        TF: true
+        Trajectory: true
+        Value: true
+      Zoom Factor: 1
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.00999999978
+      Style: Flat Squares
+      Topic: /camera/depth/points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        base_link:
+          Value: false
+        cam:
+          Value: true
+        camera_depth_frame:
+          Value: false
+        camera_depth_optical_frame:
+          Value: false
+        camera_link:
+          Value: true
+        camera_rgb_frame:
+          Value: false
+        camera_rgb_optical_frame:
+          Value: false
+        gripper_body:
+          Value: false
+        link_1:
+          Value: false
+        link_2:
+          Value: false
+        link_3:
+          Value: false
+        link_4:
+          Value: false
+        link_5:
+          Value: false
+        link_6:
+          Value: false
+        tcp_link:
+          Value: false
+        world:
+          Value: false
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        world:
+          base_link:
+            link_1:
+              link_2:
+                link_3:
+                  link_4:
+                    link_5:
+                      link_6:
+                        gripper_body:
+                          {}
+                        tcp_link:
+                          {}
+          cam:
+            {}
+          camera_link:
+            camera_depth_frame:
+              camera_depth_optical_frame:
+                {}
+            camera_rgb_frame:
+              camera_rgb_optical_frame:
+                {}
+      Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
@@ -207,7 +322,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 1.9550792
+      Distance: 2.97623706
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -222,12 +337,14 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.570203543
+      Pitch: 0.594796538
       Target Frame: world
       Value: XYOrbit (rviz)
-      Yaw: 5.33993578
+      Yaw: 5.33494091
     Saved: ~
 Window Geometry:
+  Camera:
+    collapsed: false
   Displays:
     collapsed: false
   Height: 1056
@@ -235,7 +352,7 @@ Window Geometry:
     collapsed: false
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000002ad000003dafc0200000009fb000000100044006900730070006c0061007900730100000028000003da000000d700fffffffb0000000800480065006c00700000000342000000bb0000007300fffffffb0000000a0056006900650077007300000003b0000000b0000000ad00fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002680000019a0000000000000000fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000003c005400720061006a006500630074006f007200790020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000004a00ffffff0000048c000003da00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000100000000000002ad000003dafc020000000afb000000100044006900730070006c006100790073010000002800000227000000d700fffffffb0000000800480065006c00700000000342000000bb0000007300fffffffb0000000a0056006900650077007300000003b0000000b0000000ad00fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e00670100000374000001890000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002680000019a0000000000000000fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000003c005400720061006a006500630074006f007200790020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000004a00fffffffb0000000c00430061006d0065007200610100000255000001ad0000001600ffffff0000048c000003da00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Trajectory - Trajectory Slider:
     collapsed: false
   Views:

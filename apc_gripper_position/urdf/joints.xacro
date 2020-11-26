@@ -7,7 +7,7 @@
     <joint name="gripper_body__left_ext" type="prismatic">
       <axis xyz="0 1 0" />
       <limit effort="1000" lower="-0.1" upper="0.1" velocity="0.5" />
-      <origin rpy="0 0 0" xyz="0.0311 -0.046785 0.093" />
+      <origin rpy="0 0 0" xyz="0.0 -0.046785 0.101" />
       <parent link="gripper_body" />
       <child link="left_ext" />
     </joint>
@@ -25,7 +25,7 @@
     <joint name="gripper_body__right_ext" type="prismatic">
       <axis xyz="0 1 0" />
       <limit effort="1000" lower="-0.1" upper="0.1" velocity="0.5" />
-      <origin rpy="0 0 0" xyz="0.0311 0.046785 0.093" />
+      <origin rpy="0 0 0" xyz="0.0 0.046785 0.101" />
       <parent link="gripper_body" />
       <child link="right_ext" />
     </joint>

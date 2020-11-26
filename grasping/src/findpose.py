@@ -25,8 +25,9 @@ from models.common import post_process_output
 from utils.timeit import TimeIt
 import copy
 from helpers.transforms import *
-import pose_commander
+#import pose_commander
 import tf.transformations as tft
+from irb140_commander.msg import PoseRPY
 
 device = torch.device('cpu')
 crop_size=400
@@ -36,11 +37,15 @@ rgbfin = []
 y_off=0
 x_off=0
 model = torch.load(MODEL_FILE, map_location='cpu')
+rospy.init_node('save_img')
+bridge = CvBridge()
+cmd_pub = rospy.Publisher('ggcnn/rvalues', Float32MultiArray, queue_size=1)
+
+rate = rospy.Rate(1) # ROS Rate at 5Hz
 #iy=102
 #ix=45
 #Dy=196
 #Dx=308
-ROBOT_Z = 0
 fx = 458.455478616934780
 cx = 343.645038678435410
 fy = 458.199272745572390
@@ -69,19 +74,19 @@ def process_depth_image(depth, crop_size, out_size=crop_size, return_mask=False,
 
 
 
-    with TimeIt('1'):
+    #with TimeIt('1'):
        #depth_crop = depth[(imh - crop_size) // 2 + y_off:(imh - crop_size) // 2 + crop_size + y_off,
                            #(imw - crop_size) // 2+x_off:(imw - crop_size) // 2 + crop_size+x_off]
 
 
 
-       fig = plt.figure(figsize=(10, 10))
-       ax = fig.add_subplot(1, 1, 1)
-       ax.imshow(depth_crop, cmap='gray')
+       #fig = plt.figure(figsize=(10, 10))
+       #ax = fig.add_subplot(1, 1, 1)
+       #ax.imshow(depth_crop, cmap='gray')
 
-       ax.set_title('Depth')
-       ax.axis('off')
-       plt.show()
+       #ax.set_title('Depth')
+       #ax.axis('off')
+       #plt.show()
 
     # Inpaint
     # OpenCV inpainting does weird things at the border.
@@ -162,6 +167,7 @@ def predict(depth, process_depth=True, crop_size=crop_size, out_size=crop_size, 
     return points_out, ang_out, width_out, depth.squeeze()
 
 def pushing(grasps, ix1, iy1, Dx1, Dy1, Dx, Dy):
+    #find the objects that must be pushed first
     pushlist = np.zeros(len(grasps), dtype=int)
     cont =0
     for g in grasps:
@@ -175,11 +181,11 @@ def pushing(grasps, ix1, iy1, Dx1, Dy1, Dx, Dy):
         max= g.center[1]*Dx/crop_size+l1x+l2x
         my= g.center[0]*Dy/crop_size-l1y-l2y
         may= g.center[0]*Dy/crop_size+l1y+l2y
-        print('mx, ix', mx, ix1)
-        print('mx, ix', mx, ix1)
-        print('max, ix+Dx', max, ix1+Dx1)
-        print('my, iy', my, iy1)
-        print('may, iy+Dy', may, iy1+Dy1)
+        #print('mx, ix', mx, ix1)
+        #print('mx, ix', mx, ix1)
+        #print('max, ix+Dx', max, ix1+Dx1)
+        #print('my, iy', my, iy1)
+        #print('may, iy+Dy', may, iy1+Dy1)
 
         if my < iy1:
             pushlist[cont]=3
@@ -233,10 +239,10 @@ def graspdata(points_out, depthfin, grasps, ix, iy, Dx, Dy):
 
     return grasps
 
-def rvalues(grasp, depth, Dx, Dy):
+def rvalues(grasp, depth, Dx, Dy, widthbinx,widthbiny):
 
-    print('length, width: ', grasp.length, grasp.width)
-    print('Nuevopixe    l: ', grasp.center[0],grasp.center[1])
+    #print('length, width: ', grasp.length, grasp.width)
+    #print('Nuevopixe    l: ', grasp.center[0],grasp.center[1])
     length = grasp.length
     width = grasp.width
 
@@ -246,9 +252,12 @@ def rvalues(grasp, depth, Dx, Dy):
     point_depth = depth[pyn,pxn]
     x = (pxn - 318)/(fx)*point_depth
     y = (pyn - 229)/(fy)*point_depth
-    print('x1, y1' , x*100, y*100)
-    x = (pxn-cx)*0.66/(Dx+13)
-    y = (pyn-cy)*0.44/(Dy+25)
+    #print('x1, y1' , x*100, y*100)
+    #x = (pxn-cx)*0.66/(Dx+13)
+    #y = (pyn-cy)*0.44/(Dy+25)
+    x = (pxn-cx)*0.66/(widthbinx)
+    y = (pyn-cy)*0.44/(widthbiny)
+
     z = point_depth
     x1 = (pxn+width*math.cos(ang)/2 - cx)/(fx)*point_depth
     y1 = (pyn+width*math.sin(ang)/2 - cy)/(fy)*point_depth
@@ -256,26 +265,21 @@ def rvalues(grasp, depth, Dx, Dy):
     y2 = (pyn-width*math.sin(ang)/2 - cy)/(fy)*point_depth
 
     rwidth =math.sqrt(math.pow((x1-x2),2)+math.pow((y1-y2),2))
-    print('x: ', x*100)
-    print('y: ', y*100)
-    print('z: ', z)
-    print('ang: ', ang*180/math.pi)
-    print('width: ', width)
-    print('rwidth: ', rwidth)
+    #print('x: ', x*100)
+    #print('y: ', y*100)
+    #print('z: ', z)
+    #print('ang: ', ang*180/math.pi)
+    #print('width: ', width)
+    #print('rwidth: ', rwidth)
 
 
     return x,y,z, ang, rwidth
 
-class image_converter:
 
-    def __init__(self, args):
 
-        self.index = 0
-        if len(sys.argv) > 1:
-            self.index = int(sys.argv[1])
-        rospy.init_node('save_img')
-        bridge = CvBridge()
-        cmd_pub = rospy.Publisher('ggcnn/rvalues', Float32MultiArray, queue_size=1)
+def find_pose():
+
+        rospy.sleep(0.1)
         rgbo = rospy.wait_for_message('/camera/color/image_raw', Image)
         print "depth"
         deptho = rospy.wait_for_message('/camera/depth/image_raw', Image)
@@ -283,59 +287,60 @@ class image_converter:
         depthfin = bridge.imgmsg_to_cv2(deptho)
         rgbfin = bridge.imgmsg_to_cv2(rgbo)
         rgbfin1= cv2.cvtColor(rgbfin, cv2.COLOR_BGR2RGB)
-        cv2.imwrite('rgb.png', rgbfin1)
 
-        print(rgbfin.shape)
-        img_p = np.average(rgbfin.astype(np.float64),axis=2)
-        print(img_p.shape)
-        img_p = np.tile(img_p[:,:,np.newaxis],(1,1,3))
+        #cv2.imwrite('rgb.png', rgbfin1)
+
+        #print(rgbfin.shape)
+        #img_p = np.average(rgbfin.astype(np.float64),axis=2)
+        #print(img_p.shape)
+        #img_p = np.tile(img_p[:,:,np.newaxis],(1,1,3))
         #img_p = np.tile(img_p,(1,1,3))
 
-        k = 10;
-        img_hc = k*(rgbfin-img_p) # Remueve el nivel de gris
-        print(img_hc.dtype)
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(1, 1, 1)
-        plot = ax.imshow(img_hc)
-        ax.set_title('hc')
-        ax.axis('off')
-        plt.show()
+        #k = 10;
+        #img_hc = k*(rgbfin-img_p) # Remueve el nivel de gris
+        #print(img_hc.dtype)
+        #fig = plt.figure(figsize=(10, 10))
+        #ax = fig.add_subplot(1, 1, 1)
+        #plot = ax.imshow(img_hc)
+        #ax.set_title('hc')
+        #ax.axis('off')
+        #plt.show()
 
-        print(img_hc.shape)
-        print(np.amin(img_hc,axis=2).shape)
+        #print(img_hc.shape)
+        #print(np.amin(img_hc,axis=2).shape)
         #img_hc = k*(img_hc - np.tile(np.amin(img_hc,axis=2)[:,:,np.newaxis],(1,1,3))) # Manda el menor canal a 0 y multiplica
-        print(img_hc.dtype)
+        #print(img_hc.dtype)
 
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(1, 2, 1)
-        plot = ax.imshow(img_hc)
-        ax.set_title('hc')
-        ax.axis('off')
-
-
-        ax = fig.add_subplot(1, 2, 2)
-        plot = ax.imshow(rgbfin)
-        ax.set_title('rgb')
-        ax.axis('off')
-        plt.show()
-
-        img_hc = cv2.cvtColor(img_hc.astype(np.uint8),cv2.COLOR_BGR2HSV)
+        #fig = plt.figure(figsize=(10, 10))
+        #ax = fig.add_subplot(1, 2, 1)
+        #plot = ax.imshow(img_hc)
+        #ax.set_title('hc')
+        #ax.axis('off')
 
 
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(1, 1, 1)
-        plot = ax.imshow(img_hc, cmap='hsv')
-        ax.set_title('hc')
-        ax.axis('off')
-        plt.show()
+        #ax = fig.add_subplot(1, 2, 2)
+        #plot = ax.imshow(rgbfin)
+        #ax.set_title('rgb')
+        #ax.axis('off')
+        #plt.show()
+
+        #img_hc = cv2.cvtColor(img_hc.astype(np.uint8),cv2.COLOR_BGR2HSV)
+
+
+        #fig = plt.figure(figsize=(10, 10))
+        #ax = fig.add_subplot(1, 1, 1)
+        #plot = ax.imshow(img_hc, cmap='hsv')
+        #ax.set_title('hc')
+        #ax.axis('off')
+        #plt.show()
 
         #lim0 = [0, 0, 0]
         #lim1 = [120, 100, 100]
         #img_b = cv2.inRange(img_hc,lim0,lim1) #  Aqui ya deberias tener SOLO el perfil del canasto
 
-        #iy, ix, Dy, Dx, iy1, ix1, Dy1, Dx1 = calibracion.calibracion(depthfin, rgbfin)
-        iy, ix, Dy, Dx, iy1, ix1, Dy1, Dx1 =[129, 132, 222, 367, 8, 29, 206, 317 ]
-
+        #iy, ix, Dy, Dx, widthbinx, widthbiny, iy1, ix1, Dy1, Dx1 = calibracion.calibracion(depthfin, rgbfin)
+        iy, ix, Dy, Dx, widthbinx, widthbiny, iy1, ix1, Dy1, Dx1 =[129, 155, 222, 329, 379, 252, 8, 6, 206, 317 ]
+        #raw_input('done')
 
         depthfin1 = depthfin[iy:Dy+iy, ix:Dx+ix]
 
@@ -352,19 +357,37 @@ class image_converter:
 	#ENCONTRAR LA PROFUNDIDAD EN LA IMAGEN ORIGINAL
 	#PIXEL CON VALOR MAXIMO
         pushlist, grasps = pushing(grasps, ix1, iy1, Dx1, Dy1, Dx, Dy)
-        print('pushlist:', pushlist)
+        #print('pushlist:', pushlist)
         grasps = graspdata(points_out, depthfin, grasps, ix, iy, Dx, Dy)
-        x, y, z, ang, rwidth =rvalues(grasps[maxgrasps[0][1]], depthfin, Dx, Dy)
-        print('x:' , x, 'y : ', y, 'z:', z)
-        #punto=gmsg.Pose()
+
+        arr=[]
+        for i in range(len(grasps)):
+            gqmax = maxgrasps[i][1]
+            mov = pushlist[gqmax]
+            x, y, z, ang, rwidth =rvalues(grasps[gqmax], depthfin, Dx, Dy, widthbinx, widthbiny)
+            arr.append(x)
+            arr.append(y)
+            arr.append(z)
+            arr.append(ang)
+            arr.append(rwidth)
+            arr.append(mov)
+
+
+
+
+
+        print('arr', arr)
+
+
+        punto=gmsg.Pose()
         #invertidos porque si
         #punto.position.x=y
         #punto.position.y=x
         #punto.position.z=-z
         #print punto
-        #punto.position.x=z
-        #punto.position.y=-x
-        #punto.position.z=-y
+        punto.position.x=z
+        punto.position.y=-x
+        punto.position.z=-y
         #print punto
 
 
@@ -373,20 +396,21 @@ class image_converter:
         #z=0.6
         #w = 1
 
-        #punto2 = gmsg.Pose()
-        #punto2 = convert_pose(punto,"cam","world")
+        punto2 = gmsg.Pose()
+        punto2 = convert_pose(punto,"cam","world")
 
-        #q = tft.quaternion_from_euler(np.pi, 0, ang*math.pi/180)
-        #punto2.orientation.x = q[0]
-        #punto2.orientation.y = q[1]
-        #punto2.orientation.z = q[2]
-        #punto2.orientation.w = q[3]
-        #punto2.position.z = punto2.position.z +0.3
+        q = tft.quaternion_from_euler(np.pi, 0, ang*math.pi/180)
+        punto2.orientation.x = q[0]
+        punto2.orientation.y = q[1]
+        punto2.orientation.z = q[2]
+        punto2.orientation.w = q[3]
+        punto2.position.z = punto2.position.z +0.3
+        print('punto2: ', punto2)
 
         cmd_msg = Float32MultiArray()
-        cmd_msg.data = [x, y, z, ang, rwidth]
+
+        cmd_msg.data =  arr        #print('publicado lol: ', cmd_msg)
         cmd_pub.publish(cmd_msg)
-        print('publicado lol')
 
         #d1= 0.352
         #a1=0.07
@@ -402,40 +426,40 @@ class image_converter:
         #pose_commander.main()
 
         #print convert_pose(punto2,"tcp_link","world")
-        cont=0
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(1, 2, 1)
-        ax.imshow(depthfin, cmap='gray')
-        for g in grasps:
-            g.plot(ax)
-            if pushlist[cont] == 1:
-                ax.arrow(g.center[1], g.center[0], 50, 0, head_width=8, head_length=10, fc='lightblue', ec='red')
-            if pushlist[cont] == 2:
-                ax.arrow(g.center[1], g.center[0], -50, 0, head_width=8, head_length=10, fc='lightblue', ec='red')
-            if pushlist[cont] == 3:
-                ax.arrow(g.center[1], g.center[0], 0, 50, head_width=8, head_length=10, fc='lightblue', ec='red')
-            if pushlist[cont] == 4:
-                ax.arrow(g.center[1], g.center[0], 0, -50, head_width=8, head_length=10, fc='lightblue', ec='red')
-            cont = cont+1
-        ax.set_title('Depth')
-        ax.axis('off')
+        #cont=0
+        #fig = plt.figure(figsize=(10, 10))
+        #ax = fig.add_subplot(1, 2, 1)
+        #ax.imshow(depthfin, cmap='gray')
+        #for g in grasps:
+        #    g.plot(ax)
+        #    if pushlist[cont] == 1:
+        #        ax.arrow(g.center[1], g.center[0], 50, 0, head_width=8, head_length=10, fc='lightblue', ec='red')
+        #    if pushlist[cont] == 2:
+        #        ax.arrow(g.center[1], g.center[0], -50, 0, head_width=8, head_length=10, fc='lightblue', ec='red')
+        #    if pushlist[cont] == 3:
+        #        ax.arrow(g.center[1], g.center[0], 0, 50, head_width=8, head_length=10, fc='lightblue', ec='red')
+        #    if pushlist[cont] == 4:
+        #        ax.arrow(g.center[1], g.center[0], 0, -50, head_width=8, head_length=10, fc='lightblue', ec='red')
+        #    cont = cont+1
+        #ax.set_title('Depth')
+        #ax.axis('off')
 
 
 
-        #ax = fig.add_subplot(1, 3, 2)
+        #ax = fig.add_subplot(1, 2, 2)
         #plot = ax.imshow(points_out, cmap='jet', vmin=0, vmax=1)
         #ax.set_title('quality')
         #ax.axis('off')
 
-        ax = fig.add_subplot(1, 2, 2)
-        plot = ax.imshow(ang_out, cmap='hsv', vmin=-np.pi / 2, vmax=np.pi / 2)
-        ax.set_title('Angle')
-        ax.axis('off')
+        #ax = fig.add_subplot(1, 2, 2)
+        #plot = ax.imshow(ang_out, cmap='hsv', vmin=-np.pi / 2, vmax=np.pi / 2)
+        #ax.set_title('Angle')
+        #ax.axis('off')
         #ax = fig.add_subplot(1, 3, 3)
         #plot = ax.imshow(width_out, cmap='hsv', vmin=0, vmax=150)
         #ax.set_title('width')
         #ax.axis('off')
-        plt.colorbar(plot)
+        #plt.colorbar(plot)
 
 
         #ax = fig.add_subplot(2, 2, 4)
@@ -444,12 +468,11 @@ class image_converter:
         #ax.axis('off')
 
 
-        plt.show()
+        #plt.show()
     #rospy.spin()
 
+#depth_sub = rospy.Subscriber('/camera/depth/image_raw', Image, depth_callback, queue_size=1)
+while not rospy.is_shutdown():
+    find_pose()
 
-
-
-
-if __name__=='__main__':
-    image_converter(sys.argv)
+    rate.sleep()

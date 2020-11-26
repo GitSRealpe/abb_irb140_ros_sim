@@ -11,7 +11,15 @@
 
     <!-- Base -->
     <gazebo reference="gripper_body">
-      <material>Gazebo/Purple</material>
+      <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+    <!-- Dedos -->
+    <gazebo reference="left_ext">
+      <material>Gazebo/Grey</material>
+    </gazebo>
+    <gazebo reference="right_ext">
+      <material>Gazebo/Grey</material>
     </gazebo>
 
 </robot>

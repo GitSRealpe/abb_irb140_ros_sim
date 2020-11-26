@@ -425,7 +425,7 @@ def detect_grasps(q_img, ang_img, threshold, width_img=None, no_grasps=5):
     :return: list of Grasps
     """
     #local_max = peak_local_max(q_img, min_distance=20, threshold_abs=0.8, num_peaks=no_grasps)
-    is_peak = peak_local_max(q_img, min_distance=10, threshold_abs=threshold, indices=False)
+    is_peak = peak_local_max(q_img, min_distance=15, threshold_abs=threshold, indices=False)
 
     labels = label(is_peak)[0]
     merged_peaks = center_of_mass(is_peak, labels, range(1, np.max(labels)+1))
