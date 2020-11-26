@@ -238,7 +238,7 @@
           </material>
           <geometry>
             <mesh>
-              <uri>model://estante/estante2n.dae</uri>
+              <uri>model://estante/estante2.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -247,7 +247,7 @@
           <max_contacts>10</max_contacts>
           <geometry>
             <mesh>
-              <uri>model://estante/estante2n.dae</uri>
+              <uri>model://estante/estante2.dae</uri>
             </mesh>
           </geometry>
           <surface>
