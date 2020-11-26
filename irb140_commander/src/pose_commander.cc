@@ -32,6 +32,8 @@ ros::Publisher pub;
     const robot_state::JointModelGroup* joint_model_group =
         move_group.getCurrentState()->getJointModelGroup("irb140_arm");
 
+    move_group.setMaxVelocityScalingFactor(0.1);
+
     ROS_INFO_NAMED("pose_commander", "Reference frame: %s", move_group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("pose_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());
 
@@ -51,13 +53,12 @@ ros::Publisher pub;
     move_group.setNumPlanningAttempts(10);
     //move_group.setGoalTolerance(0.01);
 
-    // Now, we call the planner to compute the plan and visualize it.
-    // Note that we are just planning, not asking move_group
-    // to actually move the robot.
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
     bool success = (move_group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO_NAMED("pose_commander", "Visualizing plan 1 (pose goal) %s", success ? "Exito" : "FAILED");
+    std::cout << "Enter for continuar"<<"\n";
+    std::cin.get();
     //actually move the real robot
     move_group.move();
     std::cout<<"completado"<<"\n";

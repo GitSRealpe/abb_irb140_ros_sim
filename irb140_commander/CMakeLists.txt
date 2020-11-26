@@ -33,6 +33,7 @@ add_message_files(
   PoseRPY.msg
   RPY.msg
   Num.msg
+  PoseRPYarray.msg
 )
 
 generate_messages(
@@ -66,6 +67,7 @@ catkin_install_python(PROGRAMS
   scripts/path_pub.py
   scripts/path_sub.py
   scripts/send_PoseRPY.py
+  scripts/sendPoseRPYarray.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -88,4 +90,5 @@ install(TARGETS pose_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 add_executable(path_commander src/path_commander.cc)
 target_link_libraries(path_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_dependencies(path_commander irb140_commander_generate_messages_cpp)
 install(TARGETS path_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

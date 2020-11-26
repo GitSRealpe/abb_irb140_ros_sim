@@ -8,62 +8,53 @@
 
 #include "std_msgs/String.h"
 #include <sstream>
-#include <iostream>
+#include "iostream"
 #include "geometry_msgs/PoseArray.h"
-#include "irb140_commander/PoseRPYarray.h"
-
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 class MoveEnable{
   public:
-    void cmdCallback(const irb140_commander::PoseRPYarray::ConstPtr& msg);
+    void cmdCallback(const geometry_msgs::PoseArray::ConstPtr& msg);
 };
 
-  void MoveEnable::cmdCallback(const irb140_commander::PoseRPYarray::ConstPtr& msg){
+  void MoveEnable::cmdCallback(const geometry_msgs::PoseArray::ConstPtr& msg){
     ROS_INFO("Path recibido");
-    std::cout << msg->poses.size() <<"\n";
-    std::cout << "puntos recibidos comandando..."<<"\n";
+    std::cout << msg->poses[0].position << "\n";
+    std::cout << "\n";
+    std::cout << "ejecutando comando..."<<"\n";
 
     moveit::planning_interface::MoveGroupInterface move_group("irb140_arm");
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
-
-    move_group.setMaxVelocityScalingFactor(0.5);
-
+    // const robot_state::JointModelGroup* joint_model_group =
+    //     move_group.getCurrentState()->getJointModelGroup("irb140_arm");
     ROS_INFO_NAMED("path_commander", "Reference frame: %s", move_group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("path_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());
 
     // Start
-    geometry_msgs::Pose target_pose = move_group.getCurrentPose().pose;
+    geometry_msgs::Pose target_pose3 = move_group.getCurrentPose().pose;
+
     std::vector<geometry_msgs::Pose> waypoints;
-    waypoints.push_back(target_pose);
+    waypoints.push_back(target_pose3);
 
-    tf2::Quaternion q;
-    geometry_msgs::Quaternion q_msg;
+    target_pose3.position.z -= 0.2;
+    waypoints.push_back(target_pose3);  // down
 
-    for (int i = 0; i < msg->poses.size(); i++) {
-      q.setRPY(msg->poses[i].rpy.roll,msg->poses[i].rpy.pitch,msg->poses[i].rpy.yaw);  // Create this quaternion from roll/pitch/yaw (in radians)
-      q.normalize();
-      q_msg = tf2::toMsg(q);
+    target_pose3.position.y -= 0.2;
+    waypoints.push_back(target_pose3);  // right
 
-      target_pose.position=msg->poses[i].position;
-      target_pose.orientation=q_msg;
-      std::cout <<target_pose<<"\n";
-      waypoints.push_back(target_pose);  // down
+    target_pose3.position.z += 0.2;
+    target_pose3.position.y += 0.2;
+    target_pose3.position.x -= 0.1;
+    waypoints.push_back(target_pose3);  // up and left
 
-    }
-    std::cout <<waypoints.size()<<"\n";
     moveit_msgs::RobotTrajectory trajectory;
     const double jump_threshold = 0.0;
     const double eef_step = 0.01;
     double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
     ROS_INFO_NAMED("path_commander", "Visualizing plan (Cartesian path) (%.2f%% achieved)", fraction * 100.0);
-    std::cout << "Enter for continuar"<<"\n";
-    std::cin.get();
-    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-    my_plan.trajectory_=trajectory;
-    move_group.execute(my_plan);
-    std::cout << "Trayectoria realizada"<<"\n";
+
+    //moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    //my_plan.trajectory_=trajectory;
+    //move_group.execute(my_plan);
 
   }
 
