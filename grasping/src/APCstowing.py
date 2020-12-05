@@ -5,7 +5,7 @@ import math
 import numpy as np
 from tf.transformations import quaternion_from_euler
 from geometry_msgs.msg import PoseStamped
-
+from irb140_commander.msg import PoseRPYarray
 import std_msgs.msg
 import geometry_msgs.msg
 from irb140_commander.msg import PoseRPY
@@ -15,8 +15,8 @@ from helpers.transforms import *
 #import joint_commander
 from irb140_commander.msg import Num
 from std_msgs.msg import String
-
-home = [1,0,0,0,0.526,0]
+import copy
+home = [-1,0,0,0,0.78,0]
 home1 = [-1,0,0,0,0,0]
 pos3 = [0.18, 0.31, 0.1, 0, 1.12, 0]
 pos3a = [0.0, 0.31, 0.1, 0, 1.12, 0]
@@ -25,9 +25,8 @@ pos2 = [0.18, 0.21, -0.1, 0, 1.4, 0]
 pos4 = [1.57, -0.21, -0.29, 0, 0.52, 0]
 
 pos5 = [1.57, 0.52, -1.12, 0, 0.64, 0]
-Z_OFF= 0.4
+Z_OFF= 0.30
 GR_OFF=0.05
-pub = rospy.Publisher('robot_commander/cmd_pose', PoseRPY, queue_size=10)
 pubJo = rospy.Publisher('robot_commander/cmd_vel', Num , queue_size=10)
 
 def to_pose(x,y,z,ox,oy,oz,ow):
@@ -59,173 +58,111 @@ def to_RPY(punto1, eu):
     return punto
 def execute_grasp(cont, N, p):
 
-    pub = rospy.Publisher('robot_commander/cmd_pose', PoseRPY, queue_size=10)
-    #savedepth3.find_pose()
     width = p[6*N+4]
-    pred=[[0,0.62,0.9,0,0.707,0,0.707],[0,0.62,0.67,0,0.707,0,0.707], [0,0.62,0.44,0,0.707,0,0.707], [0.15-width/2,0.62,0.9,0,0.707,0,0.707],[0.15-width/2,0.62,0.67,0,0.707,0,0.707], [0.15-width/2,0.62,0.44,0,0.707,0,0.707], [-0.15+width/2,0.62,0.9,0,0.707,0,0.707],[-0.15+width/2,0.62,0.67,0,0.707,0,0.707], [-0.15+width/2,0.62,0.44,0,0.707,0,0.707]]
-    pred2=[[0,0.76,0.9,0,0.707,0,0.707],[0,0.76,0.67,0,0.707,0,0.707], [0,0.76,0.44,0,0.707,0,0.707], [0.15-width/2,0.85,0.9,0,0.707,0,0.707],[0.15-width/2,0.62,0.85,0,0.707,0,0.707], [0.15-width/2,0.85,0.44,0,0.707,0,0.707], [-0.15+width/2,0.85,0.9,0,0.707,0,0.707],[-0.15+width/2,0.62,0.85,0,0.707,0,0.707], [-0.15+width/2,0.85,0.44,0,0.707,0,0.707]]
+    pred=[[0.52,-0.346, 0.62, 0, 0, -math.pi/4],
+    [0.52, -0.346, 0.39, 0, 0, -math.pi/4],
+    [0.52,-0.346, 0.16,0,0,-math.pi/4],
+    [0.565,-0.31, 0.62, 0,0,-math.pi/4],
+    [0.565,-0.31, 0.39,0,0, -math.pi/4],
+    [0.565,-0.31, 0.16,0,0,-math.pi/4],
+    [0.52, -0.346, 0.39, 0, 0, -math.pi/4],
+    [0.52, -0.346, 0.39, 0, 0, -math.pi/4],
+    [0.52, -0.346, 0.39, 0, 0, -math.pi/4],
+    [0.565,-0.31, 0.62, 0,0,-math.pi/4],
+    [0.565,-0.31, 0.39,0,0, -math.pi/4],
+    [0.565,-0.31, 0.16, 0, 0, -math.pi/4]]
+    pred2= [[0.69,-0.516, 0.62,0,0,-math.pi/4],
+    [0.69,-0.516, 0.39,0,0,-math.pi/4],
+    [0.69,-0.516, 0.16,0,0,-math.pi/4],
+    [0.735,-0.48, 0.62,0,0,-math.pi/4],
+    [0.735,-0.48, 0.39,0,0,-math.pi/4],
+    [0.735,-0.48, 0.16,0,0,-math.pi/4],
+    [0.69,-0.516, 0.39,0,0,-math.pi/4],
+    [0.69,-0.516, 0.39,0,0,-math.pi/4],
+    [0.69,-0.516, 0.39,0,0,-math.pi/4],
+    [0.735,-0.48, 0.62,0,0,-math.pi/4],
+    [0.735,-0.48, 0.39,0,0,-math.pi/4],
+    [0.735,-0.48, 0.16,0,0,-math.pi/4]]
 
     mov = p[6*N+5]
 
-    #punto= [p[6*N+2],-p[6*N+0],-p[6*N+1],0,0,0,1]
-    punto =to_pose(p[6*N+2],-p[6*N+0],-p[6*N+1],0,0,0,1)
-    #invertidos porque si
-    #punto.position.x=y
-    #punto.position.y=x
-    #punto.position.z=-z
-    #print punto
-    #print punto
-    #x =0.5
-    #y=-0.1
-    #z=0.6
-    w = 1
+
+    punto =to_pose(p[6*N+0],p[6*N+1],p[6*N+2],0,0,0,1)
     punto1 = geometry_msgs.msg.Pose()
     punto2 = geometry_msgs.msg.Pose()
     punto1 = convert_pose(punto,"cam","world")
     eu =  [0, 1.5, p[6*N+3]]
     q = tft.quaternion_from_euler(0, 1.5, p[6*N+3]*math.pi/180)
-    #punto2.orientation.x = q[0]
-    #punto2.orientation.y = q[1]
-    #punto2.orientation.z = q[2]
-    #punto2.orientation.w = q[3]
+    lista=PoseRPYarray()
+    puntorpy=PoseRPY()
+    puntorpy.position.x= punto1.position.x
+    puntorpy.position.y=punto1.position.y
+    puntorpy.position.z = Z_OFF
+    puntorpy.rpy.roll = 0
+    puntorpy.rpy.pitch = 1.57
+    puntorpy.rpy.yaw = p[6*N+3]
 
-    punto1.position.z = punto1.position.z +Z_OFF
-    #print punto2
-    print(punto1)
-
+    lista.poses.append(copy.deepcopy(puntorpy))
     #enviar arriba del objeto
-    pub.publish(to_RPY(punto1,eu))
-    msg = rospy.wait_for_message('/robot_commander/pose_done', std_msgs.msg.String)
-    print('llego1, arriba del objeto', msg)
-    #pose_commander.move_to_pose(punto1, q)
-
-    #joint_commander.move_to_jointspose(pos2)
-
     set_gripper_position(width+GR_OFF)
-    #rospy.sleep(0.5)
-    punto2 = punto1
-    punto2.position.z= punto2.position.z-0.15
+    puntorpy.position.z= 0.06
+    lista.poses.append(copy.deepcopy(puntorpy))
 
-
-    #enviar a la posicion del objeto
-    print('punto2', punto2)
-    pub.publish(to_RPY(punto2,eu))
-    msg = rospy.wait_for_message('/robot_commander/pose_done', std_msgs.msg.String)
-    print('llego2, al objeto', msg)
-    #pose_commander.move_to_pose(punto2, q)
-    #joint_commander.move_to_jointspose(pos3)
-    #rospy.sleep(0.5)
     set_gripper_position(width)
 
-
-
     #enviar de regreso a la pos predefinida arriba del objeto
-    punto2.position.z= punto2.position.z+0.15
-    print('punto1a', punto2)
-    pub.publish(to_RPY(punto2,eu))
-    msg = rospy.wait_for_message('/robot_commander/pose_done', std_msgs.msg.String)
-    print('llego3, sube objeto', msg)
+    puntorpy.position.z= 0.35
+    lista.poses.append(copy.deepcopy(puntorpy))
+
+    # puntorpy.rpy.pitch=0
+    # lista.poses.append(copy.deepcopy(puntorpy))
+
+    puntorpy.position.x= pred[cont][0]
+    puntorpy.position.y= pred[cont][1]
+    puntorpy.position.z= pred[cont][2]
+    puntorpy.rpy.roll = pred[cont][3]
+    puntorpy.rpy.pitch = pred[cont][4]
+    puntorpy.rpy.yaw = pred[cont][5]
+    lista.poses.append(copy.deepcopy(puntorpy))
+
+
+
+    puntorpy.position.x= pred2[cont][0]
+    puntorpy.position.y= pred2[cont][1]
+    puntorpy.position.z= pred2[cont][2]
+    puntorpy.rpy.roll = pred2[cont][3]
+    puntorpy.rpy.pitch = pred2[cont][4]
+    puntorpy.rpy.yaw = pred2[cont][5]
+    lista.poses.append(copy.deepcopy(puntorpy))
+
+    puntorpy.position.x= pred[cont][0]
+    puntorpy.position.y= pred[cont][1]
+    puntorpy.position.z= pred[cont][2]
+    puntorpy.rpy.roll = pred[cont][3]
+    puntorpy.rpy.pitch = pred[cont][4]
+    puntorpy.rpy.yaw = pred[cont][5]
+    lista.poses.append(copy.deepcopy(puntorpy))
 
     #enviar a la posicion pred al frente del estante
-    punto3 =to_pose(pred[cont][0],pred[cont][1],pred[cont][2], pred[cont][3], pred[cont][4], pred[cont][5],pred[cont][6])
-    eu3= [0,0,1.57]
-    q3 = tft.quaternion_from_euler(0, 0, 1.5)
-    print('punto3: ', punto3)
-    pub.publish(to_RPY(punto3,eu3))
-    #pose_commander.move_to_pose(punto3, q3)
-    #joint_commander.move_to_jointspose(pos4)
-    msg = rospy.wait_for_message('/robot_commander/pose_done', std_msgs.msg.String)
-    print('llego4, al canasto', msg)
-    #entrar al estante
-    punto4 =to_pose(pred2[cont][0],pred2[cont][1],pred2[cont][2], pred2[cont][3], pred2[cont][4], pred2[cont][5],pred2[cont][6])
-    q4 = tft.quaternion_from_euler(0, 0, 1.5)
-    print('punto4: ', punto4)
-    pub.publish(to_RPY(punto4,eu3))
-    msg = rospy.wait_for_message('/robot_commander/pose_done', std_msgs.msg.String)
-    #pose_commander.move_to_pose(punto4, q4)
-    #joint_commander.move_to_jointspose(pos5)
-    print('llego5', msg)
-    #salir del estante
+    print lista
+    pub = rospy.Publisher('robot_commander/cmd_path', PoseRPYarray, queue_size=10)
+    rate = rospy.Rate(1) # 10hz
+    rate.sleep()
+    pub.publish(lista)
 
-    pub.publish(to_RPY(punto3,eu3))
-    msg = rospy.wait_for_message('/robot_commander/pose_done', std_msgs.msg.String)
-    #pose_commander.move_to_pose(punto3, q3)
-    #joint_commander.move_to_jointspose(pos4)
-    print('llego6', msg)
-    #ir a home para tomar otra foto
+    msg=rospy.wait_for_message('/robot_commander/path_done',std_msgs.msg.String)
+
     pubJo.publish(home)
+
+    msg=rospy.wait_for_message('/robot_commander/joint_done',std_msgs.msg.String)
+
+    print('finalizo mov')
     #joint_commander.move_to_jointspose(home)
 
     flag=True
 
     return flag
 
-def push_object(cont, N, p):
-    width = p[6*N+4]
-    mov = p[6*N+5]
-
-    punto =to_pose(p[6*N+2],-p[6*N+0],-p[6*N+1],0,0,0,1 )
-    w = 1
-    punto1 = geometry_msgs.msg.Pose()
-    punto2 = geometry_msgs.msg.Pose()
-    punto1 = convert_pose(punto,"cam","world")
-    q = tft.quaternion_from_euler(0, 1.5, p[6*N+3]*math.pi/180)
-    #q = tft.quaternion_from_euler(0, 1.5, 0)
-    #punto2.orientation.x = q[0]
-    #punto2.orientation.y = q[1]
-    #punto2.orientation.z = q[2]
-    #punto2.orientation.w = q[3]
-    punto1.orientation.x = 0
-    punto1.orientation.y = 0
-    punto1.orientation.z = 0
-    punto1.orientation.w = 1
-    punto1.position.z = punto1.position.z +Z_OFF
-    #print punto2
-    print(punto1)
-
-
-    #enviar arriba del objeto
-    pose_commander.move_to_pose(punto1, q)
-    #joint_commander.move_to_jointspose(pos2)
-    #rospy.sleep(0.5)
-    set_gripper_position(0)
-    #rospy.sleep(0.5)
-    punto2 = punto1
-    punto2.position.z= punto2.position.z
-
-
-    #enviar a la posicion del objeto
-    pose_commander.move_to_pose(punto2,q)
-    #joint_commander.move_to_jointspose(pos3)
-    #rospy.sleep(0.5)
-    set_gripper_position(0)
-    #rospy.sleep(0.5)
-
-    #mover el objeto a un lado de la posicion
-    punto3 = punto2
-    if mov == 2:
-        punto3.position.y=punto3.position.y-0.1
-        punto1.position.y=punto1.position.y-0.1
-    elif mov ==3:
-        punto3.position.x=punto3.position.x+0.1
-        punto1.position.x=punto1.position.x+0.1
-    elif mov ==4:
-        punto3.position.x=punto3.position.x-0.1
-        punto1.position.x=punto1.position.x-0.1
-    elif mov ==1:
-        punto3.position.y=punto3.position.y+0.1
-        punto1.position.y=punto1.position.y+0.1
-
-    pose_commander.move_to_pose(punto3,q)
-    #joint_commander.move_to_jointspose(pos3a)
-
-    #subir un poco el gripper
-    pose_commander.move_to_pose(punto1,q)
-    #joint_commander.move_to_jointspose(pos3b)
-
-    #ir a home para tomar otra foto
-    joint_commander.move_to_jointspose(home)
-    return
 
 if __name__ == '__main__':
     rospy.init_node('APC_stowing')
@@ -238,20 +175,23 @@ if __name__ == '__main__':
     #pubJo.publish(home)
     cont =0
     while not rospy.is_shutdown():
-        if cont < 2:
-           rospy.sleep(0.5)
+        if cont < 6:
+
            #set_finger_positions([0, 0])
            #rospy.sleep(0.5)
-           #pubJo.publish(home)
-           #joint_commander.move_to_jointspose(home)
-           raw_input('inicio.')
+           pubJo.publish(home)
+
+           msg=rospy.wait_for_message('/robot_commander/joint_done',std_msgs.msg.String)
+           # raw_input('inicio.')
 
            flag =False
            N = 0
            while flag == False:
                msg = rospy.wait_for_message('/ggcnn/rvalues', std_msgs.msg.Float32MultiArray)
+               print('llego')
+               rospy.sleep(4)
                p = list(msg.data)
-               punto =to_pose(p[6*N+2],-p[6*N+0],-p[6*N+1],0,0,0,1)
+               punto =to_pose(p[6*N+0],p[6*N+1],p[6*N+2],0,0,0,1)
                #invertidos porque si
                #punto.position.x=y
                #punto.position.y=x
@@ -264,14 +204,15 @@ if __name__ == '__main__':
                w = 1
                punto1 = geometry_msgs.msg.Pose()
                punto2 = geometry_msgs.msg.Pose()
-               punto1 = convert_pose(punto,"camera_depth_frame","world")
+               punto1 = convert_pose(punto,"cam","world")
                print('punto1', punto1)
-               print(xx)   
+
                print "este es el punto"
                print(p)
                if p[6*N+5]==0.0:
                    flag = execute_grasp(cont, N, p)
                    N=N+1
+                   pubJo.publish(home)
                elif p[6*N+5] != 0.0:
                    push_object(cont, N, p)
 
@@ -282,4 +223,4 @@ if __name__ == '__main__':
 
 
 
-        raw_input('Bye')
+        # raw_input('Bye')

@@ -16,6 +16,8 @@ class MoveEnable{
     void cmdCallback(const irb140_commander::Num::ConstPtr& msg);
 };
 
+ros::Publisher pub;
+
   void MoveEnable::cmdCallback(const irb140_commander::Num::ConstPtr& msg){
     ROS_INFO("Angulos articulares recibidos:");
     for (size_t i = 0; i < 6; i++) {
@@ -64,11 +66,16 @@ class MoveEnable{
     //actually move the real robot
     move_group.move();
 
-    // Visualize the plan in RViz
-    visual_tools.deleteAllMarkers();
-    visual_tools.publishText(text_pose, "Joint Space Goal", rvt::WHITE, rvt::XLARGE);
-    visual_tools.publishTrajectoryLine(my_plan.trajectory_, joint_model_group);
-    visual_tools.trigger();
+    // // Visualize the plan in RViz
+    // visual_tools.deleteAllMarkers();
+    // visual_tools.publishText(text_pose, "Joint Space Goal", rvt::WHITE, rvt::XLARGE);
+    // visual_tools.publishTrajectoryLine(my_plan.trajectory_, joint_model_group);
+    // visual_tools.trigger();
+
+    std_msgs::String aviso;
+    aviso.data = "done";
+    ROS_INFO("%s", aviso.data.c_str());
+    pub.publish(aviso);
 
   }
 
@@ -85,25 +92,8 @@ int main(int argc, char** argv)
   MoveEnable mv;
   ROS_INFO("Esperando angulos articulares en topico robot_commander/cmd_vel...");
   ros::Subscriber sub = node_handle.subscribe("robot_commander/cmd_vel", 1000, &MoveEnable::cmdCallback, &mv);
+  pub = node_handle.advertise<std_msgs::String>("robot_commander/joint_done", 1000);
 
-  // // Visualization
-  // namespace rvt = rviz_visual_tools;
-  // moveit_visual_tools::MoveItVisualTools visual_tools("base_link");
-  // visual_tools.deleteAllMarkers();
-  //
-  // // RViz provides many types of markers, in this demo we will use text, cylinders, and spheres
-  // Eigen::Affine3d text_pose = Eigen::Affine3d::Identity();
-  // text_pose.translation().z() = 1;
-  // visual_tools.publishText(text_pose, "Joint commander", rvt::WHITE, rvt::XLARGE);
-
-
-  //
-  // // Visualize the plan in RViz
-  // visual_tools.deleteAllMarkers();
-  // visual_tools.publishText(text_pose, "Joint Space Goal", rvt::WHITE, rvt::XLARGE);
-  // visual_tools.publishTrajectoryLine(my_plan.trajectory_, joint_model_group);
-  // visual_tools.trigger();
-  // visual_tools.prompt("Press 'next' in the RvizVisualToolsGui window to end the demo");
   ros::waitForShutdown();
   return 0;
 }

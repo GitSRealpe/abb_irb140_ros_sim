@@ -92,3 +92,8 @@ add_executable(path_commander src/path_commander.cc)
 target_link_libraries(path_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 add_dependencies(path_commander irb140_commander_generate_messages_cpp)
 install(TARGETS path_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(get_pose src/get_pose.cc)
+target_link_libraries(get_pose ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_dependencies(get_pose irb140_commander_generate_messages_cpp)
+install(TARGETS get_pose DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

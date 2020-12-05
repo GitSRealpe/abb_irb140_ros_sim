@@ -13,13 +13,13 @@ if __name__ == '__main__':
 
     lista=PoseRPYarray()
     punto=PoseRPY()
-    punto.position.x=0.5;punto.position.y=0;punto.position.z=0.5
+    punto.position.x=0.5;punto.position.y=0.3;punto.position.z=0.5
     punto.rpy.roll=0;punto.rpy.pitch=1.57;punto.rpy.yaw=0
     # print punto
     lista.poses.append(copy.deepcopy(punto))
     punto.position.z=0.4
     lista.poses.append(copy.deepcopy(punto))
-    punto.position.y=-0.3
+    punto.position.y=-0.1
     lista.poses.append(copy.deepcopy(punto))
     punto.position.z=0.5
     lista.poses.append(copy.deepcopy(punto))

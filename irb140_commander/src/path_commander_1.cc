@@ -20,8 +20,6 @@ class MoveEnable{
     void cmdCallback(const irb140_commander::PoseRPYarray::ConstPtr& msg);
 };
 
-ros::Publisher pub;
-
   void MoveEnable::cmdCallback(const irb140_commander::PoseRPYarray::ConstPtr& msg){
     ROS_INFO("Path recibido");
     std::cout << msg->poses.size() <<"\n";
@@ -36,10 +34,9 @@ ros::Publisher pub;
     ROS_INFO_NAMED("path_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());
 
     // Start
-    // geometry_msgs::Pose target_pose = move_group.getCurrentPose().pose;
-    geometry_msgs::Pose target_pose;
+    geometry_msgs::Pose target_pose = move_group.getCurrentPose().pose;
     std::vector<geometry_msgs::Pose> waypoints;
-    // waypoints.push_back(target_pose);
+    waypoints.push_back(target_pose);
 
     tf2::Quaternion q;
     geometry_msgs::Quaternion q_msg;
@@ -56,26 +53,18 @@ ros::Publisher pub;
 
     }
     std::cout <<waypoints.size()<<"\n";
-    // std::cout <<waypoints[0]<<"\n";
+    std::cout <<waypoints[0]<<"\n";
     moveit_msgs::RobotTrajectory trajectory;
     const double jump_threshold = 0.0;
     const double eef_step = 0.01;
     double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
     ROS_INFO_NAMED("path_commander", "Visualizing plan (Cartesian path) (%.2f%% achieved)", fraction * 100.0);
-    // std::cout << "Enter for continuar"<<"\n";
-    // std::cin.get();
-
+    std::cout << "Enter for continuar"<<"\n";
+    std::cin.get();
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     my_plan.trajectory_=trajectory;
-    std::cout << "Ejecutando Trayectoria"<<"\n";
     move_group.execute(my_plan);
     std::cout << "Trayectoria realizada"<<"\n";
-    move_group.clearPoseTargets();
-
-    std_msgs::String aviso;
-    aviso.data = "done";
-    ROS_INFO("%s", aviso.data.c_str());
-    pub.publish(aviso);
 
   }
 
@@ -92,7 +81,6 @@ int main(int argc, char** argv)
   MoveEnable mv;
   ROS_INFO("Esperando vector de Poses en topico robot_commander/cmd_path...");
   ros::Subscriber sub = node_handle.subscribe("robot_commander/cmd_path", 1000, &MoveEnable::cmdCallback, &mv);
-  pub = node_handle.advertise<std_msgs::String>("robot_commander/path_done", 1000);
 
   ros::waitForShutdown();
   return 0;
