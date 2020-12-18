@@ -7,8 +7,8 @@
            controller_joint_names: [joint_1, joint_2, ... joint_N]
        - Update with joint names for your robot (in order expected by rbt controller)
        - and uncomment the following line: -->
-  <node pkg="tf" type="static_transform_publisher" name="camera_link" args="0.478 0.127 1.26 0 1.57 0 world camera_link 100" />
-  <node pkg="tf" type="static_transform_publisher" name="cam" args="0.478 0.127 1.26 1.57 3.14 0 world cam 100" />
+  <node pkg="tf" type="static_transform_publisher" name="camera_link" args="0.5 0.127 1.26 0 1.57 0 world camera_link 100" />
+  <node pkg="tf" type="static_transform_publisher" name="cam" args="0.5 0.127 1.26 1.57 3.14 0 world cam 100" />
   <param name="move_group/trajectory_execution/allowed_execution_duration_scaling" value="5.0" />
   <param name="move_group/trajectory_execution/execution_duration_monitoring" value="false" />
 

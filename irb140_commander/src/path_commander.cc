@@ -30,7 +30,7 @@ ros::Publisher pub;
     moveit::planning_interface::MoveGroupInterface move_group("irb140_arm");
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
 
-    //move_group.setMaxVelocityScalingFactor(0.5);
+    move_group.setMaxVelocityScalingFactor(5);
 
     ROS_INFO_NAMED("path_commander", "Reference frame: %s", move_group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("path_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());

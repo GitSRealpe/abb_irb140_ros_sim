@@ -59,6 +59,7 @@ def plot_output(grasp_width_img, depth_img, grasp_q_img, grasp_angle_img, grasps
 
 
     maxgrasps = []
+    
     for i in range(len(grasps)):
                  maxgrasps.append([grasp_q_img[grasps[i].center], i])
                  print('q',i, ': ',grasp_q_img[grasps[i].center[0], grasps[i].center[1]])

@@ -458,7 +458,7 @@ def detect_grasps(q_img, ang_img, threshold, width_img=None, no_grasps=5):
 
         grasps.append(g)
     if grasps == []:
-        if threshold >0.1:
+        if threshold >0.2:
             threshold= threshold-0.1
             print(threshold)
             grasps = detect_grasps(q_img, ang_img,  threshold, width_img=None, no_grasps=5)

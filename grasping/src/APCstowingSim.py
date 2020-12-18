@@ -16,7 +16,7 @@ from helpers.transforms import *
 from irb140_commander.msg import Num
 from std_msgs.msg import String
 import copy
-home = [-0.7,0,0,0,0.78,0]
+home = [-1,0,0,0,0.78,0]
 home1 = [-1,0,0,0,0,0]
 pos3 = [0.18, 0.31, 0.1, 0, 1.12, 0]
 pos3a = [0.0, 0.31, 0.1, 0, 1.12, 0]
@@ -25,18 +25,18 @@ pos2 = [0.18, 0.21, -0.1, 0, 1.4, 0]
 pos4 = [1.57, -0.21, -0.29, 0, 0.52, 0]
 
 pos5 = [1.57, 0.52, -1.12, 0, 0.64, 0]
-Z_OFF= 0.30
-GR_Open=120
+Z_OFF= 0.35
+GR_OFF=0.05
 pubJo = rospy.Publisher('robot_commander/cmd_vel', Num , queue_size=10)
 
 def to_pose(x,y,z,ox,oy,oz,ow):
     punto= geometry_msgs.msg.Pose()
-    punto.position.x =x
-    punto.position.y =y
-    punto.position.z =z
-    #punto.position.x =z
-    #punto.position.y =-x
-    #punto.position.z =-y
+    #punto.position.x =x
+    #punto.position.y =y
+    #punto.position.z =z
+    punto.position.x =z
+    punto.position.y =-x
+    punto.position.z =-y
 
     punto.orientation.x =ox
     punto.orientation.y =oy
@@ -48,10 +48,6 @@ def to_array(punto):
     return punto
 
 def set_gripper_position(width):
-    pubgri = rospy.Publisher('/gripper_cmd', std_msgs.msg.String, queue_size=10)
-    rate = rospy.Rate(1) # 10hz
-    rate.sleep()
-    pubgri.publish('c '+ str(width))
     return
 
 
@@ -67,38 +63,32 @@ def to_RPY(punto1, eu):
 def execute_grasp(cont, N, p):
 
     width = p[6*N+4]
-    pred=[[0.52,-0.346, 0.6, 0, 0, -math.pi/4],
-    [0.52, -0.346, 0.37, 0, 0, -math.pi/4],
-    [0.52,-0.346, 0.14,0,0,-math.pi/4],
-    [0.565,-0.31, 0.6, 0,0,-math.pi/4],
-    [0.565,-0.31, 0.37,0,0, -math.pi/4],
-    [0.565,-0.31, 0.14,0,0,-math.pi/4],
-    [0.52, -0.346, 0.6, 0, 0, -math.pi/4],
-    [0.52, -0.346, 0.37, 0, 0, -math.pi/4],
-    [0.52, -0.346, 0.17, 0, 0, -math.pi/4],
-    [0.565,-0.31, 0.6, 0,0,-math.pi/4],
-    [0.565,-0.31, 0.37,0,0, -math.pi/4],
-    [0.565,-0.31, 0.14, 0, 0, -math.pi/4]]
-    pred2= [[0.69,-0.516, 0.6,0,0,-math.pi/4],
-    [0.69,-0.516, 0.37,0,0,-math.pi/4],
-    [0.69,-0.516, 0.14,0,0,-math.pi/4],
-    [0.735,-0.48, 0.60,0,0,-math.pi/4],
-    [0.735,-0.48, 0.37,0,0,-math.pi/4],
-    [0.735,-0.48, 0.14,0,0,-math.pi/4],
-    [0.69,-0.516, 0.6,0,0,-math.pi/4],
-    [0.69,-0.516, 0.37,0,0,-math.pi/4],
-    [0.69,-0.516, 0.14,0,0,-math.pi/4],
-    [0.735,-0.48, 0.6,0,0,-math.pi/4],
-    [0.735,-0.48, 0.37,0,0,-math.pi/4],
-    [0.735,-0.48, 0.14,0,0,-math.pi/4]]
+    pred=[[0.52,-0.346, 0.82, 0, 0, -math.pi/4],
+    [0.52, -0.346, 0.59, 0, 0, -math.pi/4],
+    [0.52,-0.346, 0.36,0,0,-math.pi/4],
+    [0.565,-0.31, 0.82, 0,0,-math.pi/4],
+    [0.565,-0.31, 0.59,0,0, -math.pi/4],
+    [0.565,-0.31, 0.36,0,0,-math.pi/4],
+    [0.52, -0.346, 0.82, 0, 0, -math.pi/4],
+    [0.52, -0.346, 0.59, 0, 0, -math.pi/4],
+    [0.52, -0.346, 0.36, 0, 0, -math.pi/4],
+    [0.565,-0.31, 0.82, 0,0,-math.pi/4],
+    [0.565,-0.31, 0.59,0,0, -math.pi/4],
+    [0.565,-0.31, 0.36, 0, 0, -math.pi/4]]
+    pred2= [[0.69,-0.516, 0.82,0,0,-math.pi/4],
+    [0.69,-0.516, 0.59,0,0,-math.pi/4],
+    [0.69,-0.516, 0.36,0,0,-math.pi/4],
+    [0.735,-0.48, 0.82,0,0,-math.pi/4],
+    [0.735,-0.48, 0.59,0,0,-math.pi/4],
+    [0.735,-0.48, 0.36,0,0,-math.pi/4],
+    [0.69,-0.516, 0.82,0,0,-math.pi/4],
+    [0.69,-0.516, 0.59,0,0,-math.pi/4],
+    [0.69,-0.516, 0.36,0,0,-math.pi/4],
+    [0.735,-0.48, 0.82,0,0,-math.pi/4],
+    [0.735,-0.48, 0.59,0,0,-math.pi/4],
+    [0.735,-0.48, 0.36,0,0,-math.pi/4]]
 
     mov = p[6*N+5]
-    print('crrar')
-    set_gripper_position(width+40)
-    rospy.sleep(0.2)
-    set_gripper_position(width+40)
-    print('crro')
-
 
 
     punto =to_pose(p[6*N+0],p[6*N+1],p[6*N+2],0,0,0,1)
@@ -118,32 +108,15 @@ def execute_grasp(cont, N, p):
     print(puntorpy)
     lista.poses.append(copy.deepcopy(puntorpy))
     #enviar arriba del objeto
-
-    puntorpy.position.z= 0.005
-
-    #puntorpy.position.z= 0.26
+    set_gripper_position(width+GR_OFF)
+    #puntorpy.position.z= 0.06
+    puntorpy.position.z= 0.15
     lista.poses.append(copy.deepcopy(puntorpy))
 
-    pub = rospy.Publisher('robot_commander/cmd_path', PoseRPYarray, queue_size=10)
-    rate = rospy.Rate(1) # 10hz
-    rate.sleep()
-    pub.publish(lista)
-
-    msg=rospy.wait_for_message('/robot_commander/path_done',std_msgs.msg.String)
-    print('crrar')
     set_gripper_position(width)
-    rospy.sleep(0.2)
-    set_gripper_position(width)
-    print('crro')
-    rospy.sleep(1)
-
-
-    lista=[]
-    lista=PoseRPYarray()
-    print(lista)
 
     #enviar de regreso a la pos predefinida arriba del objeto
-    puntorpy.position.z= 0.35
+    puntorpy.position.z= 0.4
     lista.poses.append(copy.deepcopy(puntorpy))
 
     # puntorpy.rpy.pitch=0
@@ -166,23 +139,6 @@ def execute_grasp(cont, N, p):
     puntorpy.rpy.pitch = pred2[cont][4]
     puntorpy.rpy.yaw = pred2[cont][5]
     lista.poses.append(copy.deepcopy(puntorpy))
-
-    pub = rospy.Publisher('robot_commander/cmd_path', PoseRPYarray, queue_size=10)
-    rate = rospy.Rate(1) # 10hz
-    rate.sleep()
-    pub.publish(lista)
-
-    msg=rospy.wait_for_message('/robot_commander/path_done',std_msgs.msg.String)
-    print('abr')
-    set_gripper_position(width+45)
-    print('siiiiiii')
-    rospy.sleep(1)
-
-    lista=[]
-    lista=PoseRPYarray()
-    print(lista)
-
-
 
     puntorpy.position.x= pred[cont][0]
     puntorpy.position.y= pred[cont][1]
@@ -289,7 +245,7 @@ if __name__ == '__main__':
     #pubJo.publish(home)
     cont =0
     while not rospy.is_shutdown():
-        if cont < 9:
+        if cont < 5:
 
            #set_finger_positions([0, 0])
            #rospy.sleep(0.5)
@@ -301,16 +257,11 @@ if __name__ == '__main__':
            flag =False
            N = 0
            while flag == False:
-               print('abrir')
-               set_gripper_position(GR_Open)
-               print('listo')
-
                msg = rospy.wait_for_message('/ggcnn/rvalues', std_msgs.msg.Float32MultiArray)
-               print('llego')
-               rospy.sleep(1)
+               print('llego el mensaje del grasping')
+
                p = list(msg.data)
                punto =to_pose(p[6*N+0],p[6*N+1],p[6*N+2],0,0,0,1)
-
                #invertidos porque si
                #punto.position.x=y
                #punto.position.y=x
@@ -332,14 +283,13 @@ if __name__ == '__main__':
                    if p[6*N+5]==0.0:
                        flag = execute_grasp(cont, N, p)
                        N=N+1
-                       pubJo.publish(home)
                    elif p[6*N+5] != 0.0:
                        push_object(cont, N, p)
                elif p[5]==6:
-                    print('No hay objetos u hipotesis de grasping')
+                   print('No hay objetos u hipotesis de grasping')
 
            #joint_commander.move_to_jointspose(home)
-
+           rospy.sleep(0.5)
            cont = cont+1
            print('cont: ', cont )
 

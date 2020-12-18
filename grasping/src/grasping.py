@@ -147,7 +147,7 @@ def predict(depth, process_depth=True, crop_size=crop_size, out_size=crop_size, 
     sin_out = pred_out[2].cpu().numpy().squeeze()
     ang_out = np.arctan2(sin_out, cos_out) / 2.0
 
-    width_out = pred_out[3].cpu().numpy().squeeze() * 150.0  # Scaled 0-150:0-1
+    width_out = pred_out[3].cpu().numpy().squeeze() * 70.0  # Scaled 0-150:0-1
 
     # Filter the outputs.
 
@@ -265,6 +265,7 @@ def rvalues(grasp, depth, Dx, Dy, widthbinx,widthbiny):
     y2 = (pyn-width*math.sin(ang)/2 - cy)/(fy)*point_depth
 
     rwidth =math.sqrt(math.pow((x1-x2),2)+math.pow((y1-y2),2))
+    rwidth =width
     #print('x: ', x*100)
     #print('y: ', y*100)
     #print('z: ', z)
@@ -339,12 +340,22 @@ def find_pose():
         #img_b = cv2.inRange(img_hc,lim0,lim1) #  Aqui ya deberias tener SOLO el perfil del canasto
 
         #iy, ix, Dy, Dx, widthbinx, widthbiny, iy1, ix1, Dy1, Dx1 = calibracion.calibracion(depthfin, rgbfin)
-        iy, ix, Dy, Dx, widthbinx, widthbiny, iy1, ix1, Dy1, Dx1 =[129, 155, 222, 329, 379, 252, 8, 6, 206, 317 ]
+        iy, ix, Dy, Dx, widthbinx, widthbiny, iy1, ix1, Dy1, Dx1 =[129, 192, 222, 329, 379, 252, 8, 6, 206, 317 ]
         #raw_input('done')
 
         depthfin1 = depthfin[iy:Dy+iy, ix:Dx+ix]
+        #fig = plt.figure(figsize=(10, 10))
+        #ax = fig.add_subplot(1, 2, 1)
+        #ax.imshow(rgbfin)
+        #ax.set_title('rgb')
+        #ax.axis('off')
 
+        #ax = fig.add_subplot(1, 1, 1)
+        #ax.imshow(depthfin1, cmap='gray')
+        #ax.set_title('Depth')
+        #ax.axis('off')
 
+        #plt.show()
 
         depthfin1 = depthfin1
         #rgbfin1= cv2.cvtColor(rgbfin, cv2.COLOR_BGR2RGB)
@@ -352,42 +363,47 @@ def find_pose():
         #MODEL_FILE = 'training2_084'
         points_out, ang_out, width_out, depth = predict(depthfin1)
         grasps = grasp.detect_grasps(points_out, ang_out, 0.7, width_img=width_out, no_grasps=5)
-        maxgrasps = evaluation1.plot_output(width_out, depth, points_out, ang_out, grasps, rgbfin, crop_size, y_off, x_off)
+        if grasps:
+            maxgrasps = evaluation1.plot_output(width_out, depth, points_out, ang_out, grasps, rgbfin, crop_size, y_off, x_off)
 	#fig.savefig('plot1.png')
 	#ENCONTRAR LA PROFUNDIDAD EN LA IMAGEN ORIGINAL
 	#PIXEL CON VALOR MAXIMO
-        pushlist, grasps = pushing(grasps, ix1, iy1, Dx1, Dy1, Dx, Dy)
+            pushlist, grasps = pushing(grasps, ix1, iy1, Dx1, Dy1, Dx, Dy)
         #print('pushlist:', pushlist)
-        grasps = graspdata(points_out, depthfin, grasps, ix, iy, Dx, Dy)
-
+            grasps = graspdata(points_out, depthfin, grasps, ix, iy, Dx, Dy)
+        punto1 = geometry_msgs.msg.Pose()
         arr=[]
-        for i in range(len(grasps)):
-            gqmax = maxgrasps[i][1]
-            mov = pushlist[gqmax]
-            x, y, z, ang, rwidth =rvalues(grasps[gqmax], depthfin, Dx, Dy, widthbinx, widthbiny)
-            arr.append(x)
-            arr.append(y)
-            arr.append(z)
-            arr.append(ang)
-            arr.append(rwidth)
-            arr.append(mov)
+        if not grasps:
+            arr=[0,0,0,0,0,6]
+        elif grasps:
+            for i in range(len(grasps)):
+                gqmax = maxgrasps[i][1]
+                mov = pushlist[gqmax]
+                x, y, z, ang, rwidth =rvalues(grasps[gqmax], depthfin, Dx, Dy,widthbinx, widthbiny)
+                arr.append(x)
+                arr.append(y)
+                arr.append(z)
+                arr.append(ang)
+                arr.append(rwidth)
+                arr.append(mov)
+
+                punto1.position.x = z
+                punto1.position.y = -x
+                punto1.position.z = -y
+                q = tft.quaternion_from_euler(0, 1.5, ang)
+                punto1.orientation.x =q[0]
+                punto1.orientation.y =q[1]
+                punto1.orientation.z =q[2]
+                punto1.orientation.w =q[3]
+                punto2 = convert_pose(punto1,"cam","world")
+                #print('punto 1: ', punto1)
+                print('punto 2: ', punto2)
 
 
 
-
-
-        print('arr', arr)
-
-
-        punto=gmsg.Pose()
-        #invertidos porque si
-        #punto.position.x=y
-        #punto.position.y=x
-        #punto.position.z=-z
-        #print punto
-        punto.position.x=z
-        punto.position.y=-x
-        punto.position.z=-y
+        #punto.position.x=z
+        #punto.position.y=-x
+        #punto.position.z=-y
         #print punto
 
 
@@ -396,22 +412,12 @@ def find_pose():
         #z=0.6
         #w = 1
 
-        punto2 = gmsg.Pose()
-        punto2 = convert_pose(punto,"cam","world")
-
-        q = tft.quaternion_from_euler(np.pi, 0, ang*math.pi/180)
-        punto2.orientation.x = q[0]
-        punto2.orientation.y = q[1]
-        punto2.orientation.z = q[2]
-        punto2.orientation.w = q[3]
-        punto2.position.z = punto2.position.z +0.3
-        print('punto2: ', punto2)
 
         cmd_msg = Float32MultiArray()
 
         cmd_msg.data =  arr        #print('publicado lol: ', cmd_msg)
         cmd_pub.publish(cmd_msg)
-
+        print('arr: ', arr)
         #d1= 0.352
         #a1=0.07
         #a2= 0.36
@@ -426,36 +432,38 @@ def find_pose():
         #pose_commander.main()
 
         #print convert_pose(punto2,"tcp_link","world")
-        #cont=0
+        cont=0
+        fig = plt.figure(figsize=(10, 10))
+        ax = fig.add_subplot(1, 2, 1)
+        ax.imshow(depthfin, cmap='gray')
+        if grasps:
+            for g in grasps:
+                g.plot(ax)
+                if pushlist[cont] == 1:
+                    ax.arrow(g.center[1], g.center[0], 50, 0, head_width=8, head_length=10, fc='lightblue', ec='red')
+                if pushlist[cont] == 2:
+                    ax.arrow(g.center[1], g.center[0], -50, 0, head_width=8, head_length=10, fc='lightblue', ec='red')
+                if pushlist[cont] == 3:
+                    ax.arrow(g.center[1], g.center[0], 0, 50, head_width=8, head_length=10, fc='lightblue', ec='red')
+                if pushlist[cont] == 4:
+                    ax.arrow(g.center[1], g.center[0], 0, -50, head_width=8, head_length=10, fc='lightblue', ec='red')
+                cont = cont+1
+        ax.set_title('Depth')
+        ax.axis('off')
+
+
+
+        ax = fig.add_subplot(1, 2, 2)
+        plot = ax.imshow(points_out, cmap='jet', vmin=0, vmax=1)
+        ax.set_title('quality')
+        ax.axis('off')
+        plt.show()
         #fig = plt.figure(figsize=(10, 10))
         #ax = fig.add_subplot(1, 2, 1)
-        #ax.imshow(depthfin, cmap='gray')
-        #for g in grasps:
-        #    g.plot(ax)
-        #    if pushlist[cont] == 1:
-        #        ax.arrow(g.center[1], g.center[0], 50, 0, head_width=8, head_length=10, fc='lightblue', ec='red')
-        #    if pushlist[cont] == 2:
-        #        ax.arrow(g.center[1], g.center[0], -50, 0, head_width=8, head_length=10, fc='lightblue', ec='red')
-        #    if pushlist[cont] == 3:
-        #        ax.arrow(g.center[1], g.center[0], 0, 50, head_width=8, head_length=10, fc='lightblue', ec='red')
-        #    if pushlist[cont] == 4:
-        #        ax.arrow(g.center[1], g.center[0], 0, -50, head_width=8, head_length=10, fc='lightblue', ec='red')
-        #    cont = cont+1
-        #ax.set_title('Depth')
-        #ax.axis('off')
-
-
-
-        #ax = fig.add_subplot(1, 2, 2)
-        #plot = ax.imshow(points_out, cmap='jet', vmin=0, vmax=1)
-        #ax.set_title('quality')
-        #ax.axis('off')
-
-        #ax = fig.add_subplot(1, 2, 2)
         #plot = ax.imshow(ang_out, cmap='hsv', vmin=-np.pi / 2, vmax=np.pi / 2)
         #ax.set_title('Angle')
         #ax.axis('off')
-        #ax = fig.add_subplot(1, 3, 3)
+        #ax = fig.add_subplot(1, 2, 2)
         #plot = ax.imshow(width_out, cmap='hsv', vmin=0, vmax=150)
         #ax.set_title('width')
         #ax.axis('off')
@@ -468,7 +476,7 @@ def find_pose():
         #ax.axis('off')
 
 
-        #plt.show()
+        plt.show()
     #rospy.spin()
 
 #depth_sub = rospy.Subscriber('/camera/depth/image_raw', Image, depth_callback, queue_size=1)
