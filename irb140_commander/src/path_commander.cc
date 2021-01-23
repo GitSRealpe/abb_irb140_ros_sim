@@ -21,6 +21,8 @@ class MoveEnable{
 };
 
 ros::Publisher pub;
+namespace rvt = rviz_visual_tools;
+moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
 
   void MoveEnable::cmdCallback(const irb140_commander::PoseRPYarray::ConstPtr& msg){
     ROS_INFO("Path recibido");
@@ -30,7 +32,10 @@ ros::Publisher pub;
     moveit::planning_interface::MoveGroupInterface move_group("irb140_arm");
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
 
-    move_group.setMaxVelocityScalingFactor(5);
+    const robot_state::JointModelGroup* joint_model_group =
+        move_group.getCurrentState()->getJointModelGroup("irb140_arm");
+
+    move_group.setMaxVelocityScalingFactor(1);
 
     ROS_INFO_NAMED("path_commander", "Reference frame: %s", move_group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("path_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());
@@ -59,7 +64,9 @@ ros::Publisher pub;
     // std::cout <<waypoints[0]<<"\n";
     moveit_msgs::RobotTrajectory trajectory;
     const double jump_threshold = 0.0;
+    ///////////////////////////////////////////////////
     const double eef_step = 0.01;
+    ///////////////////////////////////////////////7
     double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
     ROS_INFO_NAMED("path_commander", "Visualizing plan (Cartesian path) (%.2f%% achieved)", fraction * 100.0);
     // std::cout << "Enter for continuar"<<"\n";
@@ -67,6 +74,19 @@ ros::Publisher pub;
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     my_plan.trajectory_=trajectory;
+    std::cout <<my_plan.trajectory_.joint_trajectory.points.size()<<"\n";
+
+    // Visualize the plan in RViz
+    visual_tools_->deleteAllMarkers();
+    Eigen::Isometry3d text_pose;
+    text_pose.translation() = Eigen::Vector3d( 0, 0, 1 ); // translate x,y,z
+
+    visual_tools_->publishText(text_pose, "Trayectoria Goal", rvt::WHITE, rvt::XLARGE);
+    visual_tools_->publishTrajectoryLine(my_plan.trajectory_, joint_model_group->getLinkModel("tcp_link"), joint_model_group, rvt::LIME_GREEN);
+    for (std::size_t i = 0; i < waypoints.size(); ++i)
+      visual_tools_->publishAxisLabeled(waypoints[i], "pt" + std::to_string(i), rvt::XSMALL);//SMALL);
+    visual_tools_->trigger();
+
     std::cout << "Ejecutando Trayectoria"<<"\n";
     move_group.execute(my_plan);
     std::cout << "Trayectoria realizada"<<"\n";
@@ -85,6 +105,10 @@ int main(int argc, char** argv)
   ros::NodeHandle node_handle;
   ros::AsyncSpinner spinner(2);
   spinner.start();
+
+  visual_tools_.reset(new moveit_visual_tools::MoveItVisualTools("base_link","/moveit_visual_markers"));
+  // Don't forget to trigger the publisher!
+  visual_tools_->trigger();
 
   static const std::string PLANNING_GROUP = "irb140_arm";
   moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);

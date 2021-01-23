@@ -1,0 +1,33 @@
+README on getting RVIS to work over multiple computers
+------------------------------------------------------
+
+A common task is to SSH into the robot's computer and run RVIZ to get the laser output and other visualization. Running RVIZ directly on the remote computer will not work due to the way RVIZ is implemented. The workaround is to run RVIZ locally. To do this we need to set the local computer to locate the remote MASTER NODE in order to display the right information.
+
+Assume:
+IP: 10.42.0.1 // remote computer (robot)
+IP: 10.42.0.72 // local computer (host)
+
+*** ssh into remote computer ***
+1. ssh ubuntu@10.42.0.1
+
+At the remote terminal:
+2. export ROS_MASTER_URI=http://10.42.0.1:11311   //this ensures that we do not use localhost, but the real IP address as master node
+
+3. export ROS_IP=10.42.0.1 		//this ensures that ROS knows that we cannot use hostname directly (due to DHCP firewall issues)
+
+4. roscore
+
+At the local terminal:
+1. export ROS_MASTER_URI=http://10.42.0.1:11311   //tells local computer to look for the remote here
+
+2. export ROS_IP=10.42.0.72		//this ensures that ROS knows that we cannot use hostname directly (due to DHCP firewall issues)
+
+3. rosrun rviz rviz 			// fires up rviz on local computer. It will attach to the master node of the remote computer
+
+** to check, open a remote terminal **
+1. rxgraph
+
+** Note, everytime a new terminal is open on the local/remote computer, we have to call the 2 exports commands. To make this permanent, edit the ~/.bashrc file:
+1. sudo gedit ~/.bashrc //add the two export commands at the end of the file.
+
+2. source ~/.bashrc //and restart terminal

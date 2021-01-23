@@ -6,5 +6,8 @@
   <param name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/>
 
   <!-- loads ros_controllers to the param server -->
+  <!-- controlador sim -->
+  <!-- <rosparam file="$(find irb140_moveit_real)/config/ros_controllers.yaml"/> -->
+  <!-- Controlador real -->
   <rosparam file="$(find irb140_moveit_real)/config/controllers.yaml"/>
 </launch>

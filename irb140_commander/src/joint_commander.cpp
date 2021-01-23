@@ -17,6 +17,8 @@ class MoveEnable{
 };
 
 ros::Publisher pub;
+namespace rvt = rviz_visual_tools;
+moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
 
   void MoveEnable::cmdCallback(const irb140_commander::Num::ConstPtr& msg){
     ROS_INFO("Angulos articulares recibidos:");
@@ -25,15 +27,6 @@ ros::Publisher pub;
     }
     std::cout << "\n";
     std::cout << "ejecutando comando..."<<"\n";
-
-    // Visualization
-    namespace rvt = rviz_visual_tools;
-    moveit_visual_tools::MoveItVisualTools visual_tools("base_link");
-    visual_tools.deleteAllMarkers();
-    // RViz provides many types of markers, in this demo we will use text, cylinders, and spheres
-    Eigen::Affine3d text_pose = Eigen::Affine3d::Identity();
-    text_pose.translation().z() = 1;
-    visual_tools.publishText(text_pose, "Joint commander", rvt::WHITE, rvt::XLARGE);
 
     moveit::planning_interface::MoveGroupInterface move_group("irb140_arm");
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
@@ -62,15 +55,20 @@ ros::Publisher pub;
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
     bool success = (move_group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    ROS_INFO_NAMED("joint_commander", "Visualizing plan (joint space goal) %s", success ? "OK" : "FAILED");
+    ROS_INFO_NAMED("/joint_commander", "Visualizing plan (joint space goal) %s", success ? "OK" : "FAILED");
+
+    // Visualize the plan in RViz
+    visual_tools_->deleteAllMarkers();
+    Eigen::Isometry3d text_pose;
+    text_pose.translation() = Eigen::Vector3d( 0, 0, 1 ); // translate x,y,z
+
+    visual_tools_->publishText(text_pose, "Trayectoria Goal", rvt::WHITE, rvt::XLARGE);
+    visual_tools_->publishTrajectoryLine(my_plan.trajectory_, joint_model_group->getLinkModel("tcp_link"), joint_model_group, rvt::LIME_GREEN);
+    visual_tools_->trigger();
+
+
     //actually move the real robot
     move_group.move();
-
-    // // Visualize the plan in RViz
-    // visual_tools.deleteAllMarkers();
-    // visual_tools.publishText(text_pose, "Joint Space Goal", rvt::WHITE, rvt::XLARGE);
-    // visual_tools.publishTrajectoryLine(my_plan.trajectory_, joint_model_group);
-    // visual_tools.trigger();
 
     std_msgs::String aviso;
     aviso.data = "done";
@@ -85,6 +83,20 @@ int main(int argc, char** argv)
   ros::NodeHandle node_handle;
   ros::AsyncSpinner spinner(2);
   spinner.start();
+
+  // Create pose
+  visual_tools_.reset(new moveit_visual_tools::MoveItVisualTools("base_link","/moveit_visual_markers"));
+  Eigen::Isometry3d pose;
+  pose = Eigen::AngleAxisd(M_PI/4, Eigen::Vector3d::UnitY()); // rotate along Y axis by 45 degrees
+  pose.translation() = Eigen::Vector3d( 0.5, 0.5, 0.5 ); // translate x,y,z
+
+  // Publish arrow vector of pose
+  ROS_INFO_STREAM_NAMED("test","Publishing Arrow");
+  visual_tools_->publishArrow(pose, rvt::RED, rvt::LARGE);
+  visual_tools_->publishText(pose, "joint_commander Activo", rvt::WHITE, rvt::XLARGE);
+
+  // Don't forget to trigger the publisher!
+  visual_tools_->trigger();
 
   static const std::string PLANNING_GROUP = "irb140_arm";
   moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);

@@ -20,6 +20,8 @@ class MoveEnable{
 };
 
 ros::Publisher pub;
+namespace rvt = rviz_visual_tools;
+moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
 
   void MoveEnable::cmdCallback(const irb140_commander::PoseRPY::ConstPtr& msg){
     ROS_INFO("Pose recibida:");
@@ -57,6 +59,16 @@ ros::Publisher pub;
 
     bool success = (move_group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO_NAMED("pose_commander", "Visualizing plan 1 (pose goal) %s", success ? "Exito" : "FAILED");
+
+    // Visualize the plan in RViz
+    visual_tools_->deleteAllMarkers();
+    Eigen::Isometry3d text_pose;
+    text_pose.translation() = Eigen::Vector3d( 0, 0, 1 ); // translate x,y,z
+
+    visual_tools_->publishText(text_pose, "Trayectoria Goal", rvt::WHITE, rvt::XLARGE);
+    visual_tools_->publishTrajectoryLine(my_plan.trajectory_, joint_model_group->getLinkModel("tcp_link"), joint_model_group, rvt::LIME_GREEN);
+    visual_tools_->trigger();
+
     std::cout << "Enter for continuar"<<"\n";
     std::cin.get();
     //actually move the real robot
@@ -78,6 +90,11 @@ int main(int argc, char** argv)
   ros::NodeHandle node_handle;
   ros::AsyncSpinner spinner(2);
   spinner.start();
+
+  visual_tools_.reset(new moveit_visual_tools::MoveItVisualTools("base_link","/moveit_visual_markers"));
+  // Don't forget to trigger the publisher!
+  visual_tools_->trigger();
+
 
   static const std::string PLANNING_GROUP = "irb140_arm";
   moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);

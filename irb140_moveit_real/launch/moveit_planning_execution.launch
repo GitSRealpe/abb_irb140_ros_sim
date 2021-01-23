@@ -12,14 +12,14 @@
   <param name="move_group/trajectory_execution/allowed_execution_duration_scaling" value="5.0" />
   <param name="move_group/trajectory_execution/execution_duration_monitoring" value="false" />
 
-  <rosparam command="load" file="$(find irb140_ros_interface)/config/joint_names.yaml"/>
+  <!-- <rosparam command="load" file="$(find irb140_ros_interface)/config/joint_names.yaml"/> -->
 
   <!-- the "sim" argument controls whether we connect to a Simulated or Real robot -->
   <!--  - if sim=false, a robot_ip argument is required -->
   <arg name="sim" default="false" />
   <!-- <arg name="robot_ip" unless="$(arg sim)" /> -->
   <!-- <arg name="robot_ip" value="169.254.145.7"/> -->
-  <arg name="robot_ip" value="192.168.1.102"/>
+  <!-- <arg name="robot_ip" value="192.168.1.102"/> -->
 
   <!-- load the robot_description parameter before launching ROS-I nodes -->
   <include file="$(find irb140_moveit_real)/launch/planning_context.launch" >
@@ -34,11 +34,11 @@
   <!-- run the "real robot" interface nodes -->
   <!--   - this typically includes: robot_state, motion_interface, and joint_trajectory_action nodes -->
   <!--   - replace these calls with appropriate robot-specific calls or launch files -->
-  <group unless="$(arg sim)">
+  <!-- <group unless="$(arg sim)">
     <include file="$(find abb_driver)/launch/robot_interface.launch" >
       <arg name="robot_ip" value="$(arg robot_ip)"/>
     </include>
-  </group>
+  </group> -->
 
   <!-- publish the robot state (tf transforms) -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
@@ -48,7 +48,7 @@
   </include>
 
   <include file="$(find irb140_moveit_real)/launch/moveit_rviz.launch">
-    <arg name="config" value="true"/>
+    <arg name="rviz_config" value="$(find irb140_moveit_real)/launch/moveit.rviz"/>
   </include>
 
 

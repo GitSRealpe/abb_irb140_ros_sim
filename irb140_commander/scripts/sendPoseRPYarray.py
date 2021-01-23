@@ -18,16 +18,21 @@ if __name__ == '__main__':
     # print punto
     lista.poses.append(copy.deepcopy(punto))
     punto.position.z=0.4
+    punto.position.x=0.6
+    punto.rpy.pitch=0.7
     lista.poses.append(copy.deepcopy(punto))
     punto.position.y=-0.1
     lista.poses.append(copy.deepcopy(punto))
     punto.position.z=0.5
     lista.poses.append(copy.deepcopy(punto))
-    print lista
+    punto.position.z=0.55
+    punto.rpy.pitch=0
+    lista.poses.append(copy.deepcopy(punto))
+    print(lista)
 
     pub = rospy.Publisher('robot_commander/cmd_path', PoseRPYarray, queue_size=10)
     rospy.init_node('pathSender', anonymous=True)
     rate = rospy.Rate(1) # 10hz
     rate.sleep()
     pub.publish(lista)
-    print "enviado"
+    print("enviado")
