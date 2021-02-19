@@ -74,7 +74,8 @@ moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     my_plan.trajectory_=trajectory;
-    std::cout <<my_plan.trajectory_.joint_trajectory.points.size()<<"\n";
+    // std::cout <<my_plan.trajectory_.joint_trajectory<<"\n";
+    std::cout <<"Puntos de interpolación"<<my_plan.trajectory_.joint_trajectory.points.size()<<"\n";
 
     // Visualize the plan in RViz
     visual_tools_->deleteAllMarkers();
