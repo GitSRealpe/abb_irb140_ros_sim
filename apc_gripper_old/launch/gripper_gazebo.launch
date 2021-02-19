@@ -1,0 +1,34 @@
+<launch>
+    <!--Gazebo World-->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="recording" value="false"/>
+        <arg name="debug" value="false"/>
+        <arg name="world_name" value="worlds/empty.world"/>
+    </include>
+
+     <!-- Robot model -->
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find apc_gripper_old)/urdf/gripper.xacro'" />
+    <arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="0"/>
+
+
+    <!-- Spawn the robot model -->
+    <node name="gripper_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-urdf -param robot_description -model gripper -x $(arg x) -y $(arg y) -z $(arg z)" />
+
+    <!-- Load controllers -->
+    <rosparam command="load" file="$(find apc_gripper_old)/config/joints.yaml" />
+    <!-- <rosparam command="load" file="$(find apc_gripper_old)/config/gazebo_pid.yaml" ns="/gripper"/> -->
+
+    <!-- Controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        respawn="false" output="screen" ns="/gripper"
+        args="--namespace=/gripper
+        joint_state_controller
+        gripper_controller"/>
+
+</launch>

@@ -1,0 +1,18 @@
+gripper:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  gripper_controller:
+    type: position_controllers/JointTrajectoryController
+    joints:
+      - gripper_body__left_ext
+      # - gripper_body__right_ext
+    constraints:
+      goal_time: 0.6
+      stopped_velocity_tolerance: 0.05
+      gripper_body__left_ext: {trajectory: 0.1, goal: 0.1}
+      # gripper_body__right_ext: {trajectory: 0.1, goal: 0.1}
+    stop_trajectory_duration: 0.5
+    state_publish_rate:  25
+    action_monitor_rate: 10
