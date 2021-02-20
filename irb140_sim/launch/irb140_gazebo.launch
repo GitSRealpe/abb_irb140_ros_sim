@@ -10,7 +10,7 @@
 		</include>
 
 		<!--Cargar robot-->
-		<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find irb140_sim)/urdf/irb140.xacro' cam:=1" />
+		<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find irb140_sim)/urdf/irb140.xacro' cam:=0" />
 		<arg name="x" default="0"/>
 		<arg name="y" default="0"/>
 		<arg name="z" default="0"/>

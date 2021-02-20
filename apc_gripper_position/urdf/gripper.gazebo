@@ -12,7 +12,7 @@
     <gazebo>
        <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
             <arm>
-               <arm_name>irb_140-of-arm</arm_name>
+               <arm_name>irb_140</arm_name>
                <palm_link>link_6</palm_link>
                <gripper_link>left_ext</gripper_link>
                <gripper_link>right_ext</gripper_link>

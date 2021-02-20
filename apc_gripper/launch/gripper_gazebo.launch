@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <launch>
-
     <!--Gazebo World-->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
         <arg name="paused" value="false"/>
@@ -11,34 +9,26 @@
         <arg name="world_name" value="worlds/empty.world"/>
     </include>
 
-    <group ns="/gripper">
+     <!-- Robot model -->
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find apc_gripper)/urdf/gripper.xacro'" />
+    <arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="0"/>
 
 
-        <!-- Robot model -->
-        <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find apc_gripper)/urdf/gripper.xacro'" />
-        <arg name="x" default="0"/>
-        <arg name="y" default="0"/>
-        <arg name="z" default="0"/>
+    <!-- Spawn the robot model -->
+    <node name="gripper_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-urdf -param robot_description -model gripper -x $(arg x) -y $(arg y) -z $(arg z)" />
 
-        <!-- Spawn the robot model -->
-        <node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
-              args="-urdf -param robot_description -model gripper -x $(arg x) -y $(arg y) -z $(arg z)" />
+    <!-- Load controllers -->
+    <rosparam command="load" file="$(find apc_gripper)/config/joints.yaml" />
+    <!-- <rosparam command="load" file="$(find apc_gripper)/config/gazebo_pid.yaml" ns="/gripper"/> -->
 
-        <!-- Load controllers -->
-        <rosparam command="load" file="$(find apc_gripper)/config/joints.yaml" />
-
-        <!-- Controllers -->
-        <node name="controller_spawner" pkg="controller_manager" type="spawner"
-            respawn="false" output="screen" ns="/gripper"
-            args="--namespace=/gripper
-            joint_state_controller
-            joint1_position_controller
-            joint2_position_controller
-            --timeout 60">
-        </node>
-
-        <node name="rqt_publisher" pkg="rqt_publisher" type="rqt_publisher" />
-
-    </group>
+    <!-- Controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        respawn="false" output="screen" ns="/gripper"
+        args="--namespace=/gripper
+        joint_state_controller
+        gripper_controller"/>
 
 </launch>
