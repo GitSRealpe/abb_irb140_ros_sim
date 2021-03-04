@@ -33,5 +33,9 @@
   </include>
 
   <!-- Run Rviz and load the default config to see the state of the move_group node -->
-  <include file="$(find irb140_moveit_bin_pick)/launch/moveit_rviz.launch"></include>
+  <!-- <include file="$(find irb140_moveit_bin_pick)/launch/moveit_rviz.launch"></include> -->
+
+  <!-- Show in Rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find irb140_moveit_bin_pick)/config/cfg.rviz"/>
+
 </launch>
