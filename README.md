@@ -36,3 +36,4 @@ ros-noetic-joint-state-publisher-gui
 ros-noetic-joint-state-controller
 ros-noetic-rqt-joint-trajectory-controller
 ```
+![](images/rviz.gif)
