@@ -34,7 +34,7 @@ moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
     const robot_state::JointModelGroup* joint_model_group =
         move_group.getCurrentState()->getJointModelGroup("irb140_arm");
 
-    move_group.setMaxVelocityScalingFactor(0.1);
+    // move_group.setMaxVelocityScalingFactor(0.1);
 
     ROS_INFO_NAMED("pose_commander", "Reference frame: %s", move_group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("pose_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());
@@ -69,8 +69,8 @@ moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
     visual_tools_->publishTrajectoryLine(my_plan.trajectory_, joint_model_group->getLinkModel("tcp_link"), joint_model_group, rvt::LIME_GREEN);
     visual_tools_->trigger();
 
-    std::cout << "Enter for continuar"<<"\n";
-    std::cin.get();
+    // std::cout << "Enter for continuar"<<"\n";
+    // std::cin.get();
     //actually move the real robot
     move_group.move();
     std::cout<<"completado"<<"\n";
