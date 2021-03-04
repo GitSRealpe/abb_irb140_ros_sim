@@ -61,7 +61,7 @@ Visualization Manager:
       Radius: 0.009999999776482582
       Reference Frame: gripper_body
       Value: true
-    - Alpha: 0.5
+    - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
       Enabled: true
@@ -140,7 +140,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.0257960557937622
+      Distance: 0.8768899440765381
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -148,17 +148,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.2877582311630249
-        Y: -0.1264621615409851
-        Z: -0.07849178463220596
+        X: -0.29409316182136536
+        Y: -0.13976573944091797
+        Z: -0.05533843860030174
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5353984236717224
+      Pitch: 0.5653983950614929
       Target Frame: <Fixed Frame>
-      Yaw: 0.5003973841667175
+      Yaw: 0.46039628982543945
     Saved: ~
 Window Geometry:
   Displays:
