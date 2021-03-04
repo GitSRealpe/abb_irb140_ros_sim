@@ -16,13 +16,13 @@
       <collision>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_soporte.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_cuerpo.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_soporte.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_cuerpo.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="gris">
          <color rgba="0.5 0.5 0.5 1"/>
@@ -41,13 +41,13 @@
       <collision>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_eslabon_externo.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_eslabon_externo.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="blu">
          <color rgba="0 0 1 1"/>
@@ -64,13 +64,13 @@
       <collision>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_eslabon_interno.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_eslabon_interno.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="blug">
          <color rgba="0 1 1 1"/>
@@ -87,13 +87,13 @@
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0" />
       <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_eslabon_externo.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_eslabon_externo.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="blu">
          <color rgba="0 0 1 1"/>
@@ -110,13 +110,13 @@
       <collision>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_eslabon_interno.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
       <visual>
         <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
-          <mesh filename="package://apc_gripper/meshes/mesh_eslabon.stl" scale="0.001 0.001 0.001"/>
+          <mesh filename="package://apc_gripper/meshes/mesh_eslabon_interno.stl" scale="0.001 0.001 0.001"/>
         </geometry>
         <material name="blug">
          <color rgba="0 1 1 1"/>
@@ -132,11 +132,11 @@
   <link name="left_finger">
     <inertial>
       <mass value="0.1" />
-      <origin rpy="0 0 0" xyz="-0.031 0.018 0.032" />
+      <origin rpy="0 0 0" xyz="0 0.018 0.032" />
       <inertia ixx="0.0000847702" ixy="0" ixz="0" iyy="0.0000955040" iyz="0" izz="0.0000331406" />
     </inertial>
       <collision>
-        <origin rpy="0 0 0" xyz="0 0 0" />
+        <origin rpy="0 0 0" xyz="0 -0.002 0" />
         <geometry>
           <mesh filename="package://apc_gripper/meshes/mesh_dedo.stl" scale="0.001 0.001 0.001"/>
         </geometry>
@@ -157,17 +157,17 @@
 <link name="right_finger">
   <inertial>
     <mass value="0.1" />
-    <origin rpy="0 0 ${pi}" xyz="-0.031 -0.018 0.032" />
+    <origin rpy="0 0 ${pi}" xyz="0 -0.018 0.032" />
     <inertia ixx="0.0000847702" ixy="0" ixz="0" iyy="0.0000955040" iyz="0" izz="0.0000331406" />
   </inertial>
       <collision>
-        <origin rpy="0 0 ${pi}" xyz="-0.0620 0 0" />
+        <origin rpy="0 0 0" xyz="0 -0.002 0.0" />
         <geometry>
           <mesh filename="package://apc_gripper/meshes/mesh_dedo.stl" scale="0.001 0.001 0.001"/>
         </geometry>
       </collision>
       <visual>
-        <origin rpy="0 0 ${pi}" xyz="-0.0620 0 0" />
+        <origin rpy="0 0 0" xyz="0 0 0" />
         <geometry>
           <mesh filename="package://apc_gripper/meshes/mesh_dedo.stl" scale="0.001 0.001 0.001"/>
         </geometry>

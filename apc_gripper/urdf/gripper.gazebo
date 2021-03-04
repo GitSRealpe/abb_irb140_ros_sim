@@ -8,36 +8,18 @@
         </plugin>
     </gazebo> -->
 
-    <gazebo>
-       <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
-            <arm>
-               <arm_name>irb_140</arm_name>
-               <palm_link>link_6</palm_link>
-               <gripper_link>left_ext</gripper_link>
-               <gripper_link>right_ext</gripper_link>
-            </arm>
-           <forces_angle_tolerance>100</forces_angle_tolerance>
-           <update_rate>4</update_rate>
-           <grip_count_threshold>4</grip_count_threshold>
-           <max_grip_count>8</max_grip_count>
-           <release_tolerance>0.005</release_tolerance>
-           <disable_collisions_on_attach>false</disable_collisions_on_attach>
-           <contact_topic>__default_topic__</contact_topic>
-        </plugin>
-    </gazebo>
-
     <!-- Mimic joints -->
     <gazebo>
       <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_gripper_1">
         <joint>gripper_body__left_ext</joint>
         <mimicJoint>gripper_body__right_ext</mimicJoint>
-        <multiplier>-1.0</multiplier>
+        <multiplier>1.0</multiplier>
         <offset>0.0</offset>
         <robotNamespace>/gripper</robotNamespace>
         <!-- <hasPID>gripper_body__right_ext</hasPID> -->
       </plugin>
 
-      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_gripper_1">
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_gripper_2">
         <joint>gripper_body__left_ext</joint>
         <mimicJoint>left_ext__left_finger</mimicJoint>
         <multiplier>-1.0</multiplier>
@@ -46,16 +28,16 @@
         <!-- <hasPID>gripper_body__right_ext</hasPID> -->
       </plugin>
 
-      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_gripper_1">
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_gripper_3">
         <joint>gripper_body__left_ext</joint>
         <mimicJoint>right_ext__right_finger</mimicJoint>
-        <multiplier>1.0</multiplier>
+        <multiplier>-1.0</multiplier>
         <offset>0.0</offset>
         <robotNamespace>/gripper</robotNamespace>
         <!-- <hasPID>gripper_body__right_ext</hasPID> -->
       </plugin>
 
-      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_gripper_1">
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_gripper_4">
         <joint>gripper_body__left_ext</joint>
         <mimicJoint>gripper_body__right_int</mimicJoint>
         <multiplier>-1.0</multiplier>
@@ -64,7 +46,7 @@
         <!-- <hasPID>gripper_body__right_ext</hasPID> -->
       </plugin>
 
-      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_gripper_1">
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="mimic_gripper_5">
         <joint>gripper_body__left_ext</joint>
         <mimicJoint>gripper_body__left_int</mimicJoint>
         <multiplier>1.0</multiplier>
@@ -72,7 +54,78 @@
         <robotNamespace>/gripper</robotNamespace>
         <!-- <hasPID>gripper_body__right_ext</hasPID> -->
       </plugin>
+
+      <!-- <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
+           <arm>
+              <arm_name>irb_140-of-arm</arm_name>
+              <palm_link>link_6</palm_link>
+              <gripper_link>left_finger</gripper_link>
+              <gripper_link>right_finger</gripper_link>
+           </arm>
+          <forces_angle_tolerance>91</forces_angle_tolerance>
+          <update_rate>4</update_rate>
+          <grip_count_threshold>4</grip_count_threshold>
+          <max_grip_count>8</max_grip_count>
+          <release_tolerance>0.005</release_tolerance>
+          <disable_collisions_on_attach>true</disable_collisions_on_attach>
+          <contact_topic>__default_topic__</contact_topic>
+       </plugin> -->
+
+      <plugin name="pick_plugin" filename="libpick_plugin.so">
+      <ignore>bookshelf,estante,bin,ground_plane</ignore>
+      </plugin>
     </gazebo>
+
+    <gazebo reference="left_finger">
+      <sensor name="detector" type="logical_camera">
+          <logical_camera>
+            <near>0.032</near>
+            <far>0.04</far>
+            <horizontal_fov>1.0</horizontal_fov>
+            <aspect_ratio>0.7</aspect_ratio>
+          </logical_camera>
+          <visualize>false</visualize>
+          <always_on>true</always_on>
+          <update_rate>10</update_rate>
+          <pose>0 -0.008 0.08 0 0 1.57</pose>
+        </sensor>
+        <collision>
+         <surface>
+           <friction>
+             <ode>
+               <mu>0</mu>
+               <mu2>0</mu2>
+             </ode>
+           </friction>
+         </surface>
+       </collision>
+    </gazebo>
+
+    <gazebo reference="right_finger">
+      <sensor name="detector_right" type="logical_camera">
+          <logical_camera>
+            <near>0.032</near>
+            <far>0.041</far>
+            <horizontal_fov>1.0</horizontal_fov>
+            <aspect_ratio>0.7</aspect_ratio>
+          </logical_camera>
+          <visualize>false</visualize>
+          <always_on>true</always_on>
+          <update_rate>10</update_rate>
+          <pose>0 -0.008 0.08 0 0 1.57</pose>
+        </sensor>
+        <collision>
+         <surface>
+           <friction>
+             <ode>
+               <mu>0</mu>
+               <mu2>0</mu2>
+             </ode>
+           </friction>
+         </surface>
+       </collision>
+    </gazebo>
+
 
     <!-- Base -->
     <gazebo reference="gripper_body">
@@ -81,10 +134,15 @@
 
     <!-- Dedos -->
     <gazebo reference="left_ext">
-      <material>Gazebo/Blue</material>
+      <material>Gazebo/Red</material>
     </gazebo>
     <gazebo reference="right_ext">
+      <material>Gazebo/Red</material>
+    </gazebo>
+    <gazebo reference="right_int">
       <material>Gazebo/Blue</material>
     </gazebo>
-
+    <gazebo reference="left_int">
+      <material>Gazebo/Blue</material>
+    </gazebo>
 </robot>

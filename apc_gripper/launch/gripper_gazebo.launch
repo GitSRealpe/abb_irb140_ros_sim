@@ -6,6 +6,7 @@
         <arg name="gui" value="true"/>
         <arg name="recording" value="false"/>
         <arg name="debug" value="false"/>
+        <arg name="verbose" value="true" />
         <arg name="world_name" value="worlds/empty.world"/>
     </include>
 
