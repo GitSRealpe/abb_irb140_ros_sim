@@ -19,6 +19,7 @@ catkin_make
 The next are the required ROS packages for a proper execution of all the packages contained in this project. Just execute the command `sudo apt install <name_of_package>` and it will be automatically installed.
 ```
 ros-noetic-desktop-full                     # basic ROS instance, needed for almost any ROS project
+ros-noetic-gazebo-ros-control               # needed for controller simulation in Gazebo
 ros-noetic-joint-state-controller           # required for proper robot simulation
 ros-noetic-joint-state-publisher-gui        # plugin for publishing joint state values
 ros-noetic-controller-manager               # package that implements virtual controllers for the simulated robot
@@ -41,14 +42,20 @@ catkin_make
 ```
 The plugin is already configured to the gripper description used in this project, for more indepth information you can access the [plugin repo](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins) directly.
 # Bringup and simulation
-There are two options or environments to simulate the robot, RViz and Gazebo
+There are two options or environments to simulate the robot, RViz and Gazebo.
 ## RViz
 The bringup in RViz offers a visualization of the robot description and its current state, be it just in simulation or the real robot.
 
-Simply execute `roslaunch irb140_sim irb140_rviz.launch`, this will load the robot description in the ROS parameter server and it can be then visualized in the RViz gui, this will also execute the `joint-state-publisher-gui` so the joint angles can be set manually using sliders.
+Simply execute `roslaunch irb140_sim irb140_rviz.launch`, this will load the robot description in the ROS parameter server and it can be then visualized in the RViz gui with its current joint states, this will also execute the `joint-state-publisher-gui` so the joint angles can be set manually using sliders.
 ![](images/rviz.gif)
 ## Gazebo
-Simply run `roslaunch irb140_sim irb140_gazebo.launch`
+Simply run `roslaunch irb140_sim irb140_gazebo.launch` to launch the robot description in the parameter server then simulate it in Gazebo, where the robot can interact with objects with simulated physics.
+
+AQUI GIF DE Gazebo
+
+The executed simulation has the robot with the designed gripper, positioned in the world origin of a custom Gazebo world
+
+# Motion planning
 
 
 **With the help from:**

@@ -204,7 +204,7 @@
       </include>
     </model> -->
 
-    <!-- <model name="palo">
+    <model name="palo">
       <pose>1 0 0.3 0 0 0</pose>
       <link name="link">
         <collision name="collision">
@@ -234,7 +234,7 @@
           </geometry>
         </visual>
       </link>
-    </model> -->
+    </model>
 
   </world>
 </sdf>
