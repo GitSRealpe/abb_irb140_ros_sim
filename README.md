@@ -6,14 +6,7 @@ Each package contains different functionalities, some of them require the use of
 **Author:** Sebastian Realpe Rua, mainly for use in the robotics lab of Universidad Nacional de Colombia
 
 # Installation
-Run the following commands, for execution in `ros-noetic` in `Ubuntu 20.04`, assuming you already have a Catkin workspace.
-
-```
-cd ~/catkin_ws/src/
-git clone -b noetic https://github.com/GitSRealpe/abb_irb140_ros_sim.git
-cd ..
-catkin_make
-```
+Firstly, you need ROS, follow the instructions in their official site [ros noetic installation](http://wiki.ros.org/noetic/Installation/Ubuntu). (ros-desktop-full is the recommmended installation).
 
 ## Required ROS packages
 The next are the required ROS packages for a proper execution of all the packages contained in this project. Just execute the command `sudo apt install <name_of_package>` and it will be automatically installed.
@@ -28,6 +21,15 @@ ros-noetic-rqt-joint-trajectory-controller  # rqt plugin for publishing joint tr
 ros-noetic-moveit                           # package for motion planning used both in simulated and real robot
 ros-noetic-moveit-visual-tools              # moveit addon used for drawing the planned trajectories in RViz
 
+```
+
+Then, run the following commands in your `Ubuntu 20.04` terminal, assuming you already have a Catkin workspace.
+
+```
+cd ~/catkin_ws/src/
+git clone -b noetic https://github.com/GitSRealpe/abb_irb140_ros_sim.git
+cd ..
+catkin_make
 ```
 
 ## Gazebo joint mimic plugin
