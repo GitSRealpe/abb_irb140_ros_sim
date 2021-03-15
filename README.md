@@ -55,6 +55,7 @@ Now the last step is downloading and *installing* the props or objects used in t
 
     `export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/.gazebo/props`
   - Save the changes to the file.
+  
 With this you should have all is needed for a correct simulation, to verify this, run Gazebo with the command `gazebo` in any terminal, and try to add the models you have *installed* to the world.
 ![You will bet able to insert objects like these](images/props.png)
 
