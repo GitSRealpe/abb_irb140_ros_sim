@@ -49,9 +49,12 @@ Now the last step is downloading and *installing* the props or objects used in t
 
 1. Download the modified model files from here: [modified model-set](https://www.mediafire.com/file/hojbtcs5x3st9fp/props.7z/file) (modified in the sense of SDF setup for Gazebo integration).
 2. Its a compressed file (.7z format), Extract the folder `props` it in the following path (assuming you have a default Gazebo installation) } `~/.gazebo`
-3. Add this new model folder to the gazebo path execution doing the following:
+3. Add this new model folder to the gazebo path execution by doing the following:
   - In a terminal run the command `gedit ~/.bashrc`.
-  - At the very end of the file, copy and paste this `export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/.gazebo/props`
+  - At the very end of the file, copy and paste this:
+
+  `export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/.gazebo/props`
+
 With this you should have all is needed for a correct simulation, to verify this, run Gazebo with the command `gazebo` in any terminal, and try to add the models you have *installed* to the world.
 ![You will bet able to insert objects like these](images/props.png)
 
