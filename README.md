@@ -1,12 +1,12 @@
 # ABB IRB140 ROS Simulation packages
 This a set of ROS packages for simulating the ABB IRB140 robot, mainly for academic porpoises. Aimed to the students of Robotics in the the Universidad Nacional de Colombia.
 
-Each package contains different functionalities, some of them require the use of the others packages, so its recommmended to download or install all of them as a whole.
+Each package contains different functionalities, some of them require the use of the others packages, so its recommended to download or install all of them as a whole.
 
 **Author:** Sebastian Realpe Rua, mainly for use in the robotics lab of Universidad Nacional de Colombia
 
 # Installation
-Firstly, you need ROS, follow the instructions in their official site [ros noetic installation](http://wiki.ros.org/noetic/Installation/Ubuntu). (ros-desktop-full is the recommmended installation).
+Firstly, you need ROS, follow the instructions in their official site [ros noetic installation](http://wiki.ros.org/noetic/Installation/Ubuntu). (ros-desktop-full is the recommended installation).
 
 ## Required ROS packages
 The next are the required ROS packages for a proper execution of all the packages contained in this project. Just execute the command `sudo apt install <name_of_package>` and it will be automatically installed.
@@ -43,6 +43,18 @@ cd ..
 catkin_make
 ```
 The plugin is already configured to the gripper description used in this project, for more indepth information you can access the [plugin repo](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins) directly.
+
+## APC Gazebo props
+Now the last step is downloading and *installing* the props or objects used in the Gazebo simulation for this specific project. The 3D models come from the [YCB Object and Model Set](https://www.ycbbenchmarks.com/object-models/) project, where their objective is to have 3D models of real life objects for research in grasping and robotics.
+
+1. Download the modified model files from here: [modified model-set](https://www.mediafire.com/file/hojbtcs5x3st9fp/props.7z/file) (modified in the sense of SDF setup for Gazebo integration).
+2. Its a compressed file (.7z format), Extract the folder `props` it in the following path (assuming you have a default Gazebo installation) } `~/.gazebo`
+3. Add this new model folder to the gazebo path execution doing the following:
+  - In a terminal run the command `gedit ~/.bashrc`.
+  - At the very end of the file, copy and paste this `export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:~/.gazebo/props`
+With this you should have all is needed for a correct simulation, to verify this, run Gazebo with the command `gazebo` in any terminal, and try to add the models you have *installed* to the world.
+![You will bet able to insert objects like these](images/props.png)
+
 # Bringup and simulation
 There are two options or environments to simulate the robot, RViz and Gazebo.
 ## RViz
