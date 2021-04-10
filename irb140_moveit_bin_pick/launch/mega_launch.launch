@@ -1,6 +1,0 @@
-<launch>
-
-  <include file="$(find irb140_sim)/launch/bin_picking.launch"></include>
-  <include file="$(find irb140_moveit_bin_pick)/launch/irb140_bin_pick_moveit.launch"></include>
-
-</launch>
