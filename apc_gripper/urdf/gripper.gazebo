@@ -55,25 +55,10 @@
         <!-- <hasPID>gripper_body__right_ext</hasPID> -->
       </plugin>
 
-      <!-- <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
-           <arm>
-              <arm_name>irb_140-of-arm</arm_name>
-              <palm_link>link_6</palm_link>
-              <gripper_link>left_finger</gripper_link>
-              <gripper_link>right_finger</gripper_link>
-           </arm>
-          <forces_angle_tolerance>91</forces_angle_tolerance>
-          <update_rate>4</update_rate>
-          <grip_count_threshold>4</grip_count_threshold>
-          <max_grip_count>8</max_grip_count>
-          <release_tolerance>0.005</release_tolerance>
-          <disable_collisions_on_attach>true</disable_collisions_on_attach>
-          <contact_topic>__default_topic__</contact_topic>
-       </plugin> -->
-
       <plugin name="pick_plugin" filename="libpick_plugin.so">
       <ignore>bookshelf,estante,bin,ground_plane</ignore>
       </plugin>
+
     </gazebo>
 
     <gazebo reference="left_finger">
