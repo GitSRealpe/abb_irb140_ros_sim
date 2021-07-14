@@ -17,11 +17,7 @@ hardware_interface:
     - joint_6
     - gripper_body__left_ext
   sim_control_mode: 1  # 0: position, 1: velocity
-# Publish all joint states
-# Creates the /joint_states topic necessary in ROS
-joint_state_controller:
-  type: joint_state_controller/JointStateController
-  publish_rate: 50
+# Controller list for Moveit to lookup
 controller_list:
   - name: irb_140/arm_controller
     action_ns: follow_joint_trajectory
@@ -40,4 +36,3 @@ controller_list:
     type: FollowJointTrajectory
     joints:
       - gripper_body__left_ext
-      - gripper_body__right_ext
