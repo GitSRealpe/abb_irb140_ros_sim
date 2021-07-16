@@ -1,9 +1,7 @@
 #include <moveit/move_group_interface/move_group_interface.h>
-#include <moveit/planning_scene_interface/planning_scene_interface.h>
-#include <moveit_msgs/DisplayRobotState.h>
-#include <moveit_msgs/DisplayTrajectory.h>
-#include <moveit_msgs/AttachedCollisionObject.h>
-#include <moveit_msgs/CollisionObject.h>
+//#include <moveit/planning_scene_interface/planning_scene_interface.h>
+//#include <moveit_msgs/DisplayRobotState.h>
+//#include <moveit_msgs/DisplayTrajectory.h>
 #include <moveit_visual_tools/moveit_visual_tools.h>
 
 #include "std_msgs/String.h"
@@ -29,12 +27,13 @@ moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
     std::cout << "ejecutando comando..."<<"\n";
 
     moveit::planning_interface::MoveGroupInterface move_group("irb140_arm");
-    moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+    //moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     const robot_state::JointModelGroup* joint_model_group =
         move_group.getCurrentState()->getJointModelGroup("irb140_arm");
     ROS_INFO_NAMED("joint_commander", "Reference frame: %s", move_group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("joint_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());
 
+    move_group.setMaxVelocityScalingFactor(1);
     // Start
     moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
     // Next get the current set of joint values for the group.

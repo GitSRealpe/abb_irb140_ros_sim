@@ -1,9 +1,7 @@
 #include <moveit/move_group_interface/move_group_interface.h>
-#include <moveit/planning_scene_interface/planning_scene_interface.h>
-#include <moveit_msgs/DisplayRobotState.h>
-#include <moveit_msgs/DisplayTrajectory.h>
-#include <moveit_msgs/AttachedCollisionObject.h>
-#include <moveit_msgs/CollisionObject.h>
+// #include <moveit/planning_scene_interface/planning_scene_interface.h>
+// #include <moveit_msgs/DisplayRobotState.h>
+// #include <moveit_msgs/DisplayTrajectory.h>
 #include <moveit_visual_tools/moveit_visual_tools.h>
 
 #include "std_msgs/String.h"
@@ -30,14 +28,16 @@ moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
     std::cout << "ejecutando comando..."<<"\n";
 
     moveit::planning_interface::MoveGroupInterface move_group("irb140_arm");
-    moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+    // moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
     const robot_state::JointModelGroup* joint_model_group =
         move_group.getCurrentState()->getJointModelGroup("irb140_arm");
 
-    // move_group.setMaxVelocityScalingFactor(0.1);
+    move_group.setMaxVelocityScalingFactor(1);
 
     ROS_INFO_NAMED("pose_commander", "Reference frame: %s", move_group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("pose_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());
+    move_group.setNumPlanningAttempts(10);
+    //move_group.setGoalTolerance(0.01);
 
     tf2::Quaternion q;
     geometry_msgs::Quaternion q_msg;
@@ -51,9 +51,6 @@ moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
     target_pose.orientation=q_msg;
     move_group.setPoseTarget(target_pose,"");
     std::cout <<move_group.getPoseTarget("")<<"\n";
-
-    move_group.setNumPlanningAttempts(10);
-    //move_group.setGoalTolerance(0.01);
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
