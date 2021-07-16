@@ -34,6 +34,7 @@ add_message_files(
   RPY.msg
   Num.msg
   PoseRPYarray.msg
+  OrientConst.msg
 )
 
 generate_messages(
@@ -60,15 +61,12 @@ link_directories(${catkin_LIBRARY_DIRS})
 
 #chmod +x mypythonscript.py para que sea ejecutable
 catkin_install_python(PROGRAMS
-  scripts/talker.py
-  scripts/listener.py
-  scripts/pose_commander.py
-  scripts/joint_commander.py
-  scripts/path_pub.py
-  scripts/path_sub.py
-  scripts/send_PoseRPY.py
-  scripts/sendPoseRPYarray.py
+  scripts/sendJoints.py
+  scripts/sendPose.py
+  scripts/sendPoseArray.py
+  scripts/sendPoseArray2.py
   scripts/gripper.py
+  scripts/gripper_routine.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
