@@ -1,9 +1,7 @@
 #include <moveit/move_group_interface/move_group_interface.h>
-#include <moveit/planning_scene_interface/planning_scene_interface.h>
-#include <moveit_msgs/DisplayRobotState.h>
-#include <moveit_msgs/DisplayTrajectory.h>
-#include <moveit_msgs/AttachedCollisionObject.h>
-#include <moveit_msgs/CollisionObject.h>
+// #include <moveit/planning_scene_interface/planning_scene_interface.h>
+// #include <moveit_msgs/DisplayRobotState.h>
+// #include <moveit_msgs/DisplayTrajectory.h>
 #include <moveit_visual_tools/moveit_visual_tools.h>
 
 #include "std_msgs/String.h"
@@ -21,6 +19,7 @@ class MoveEnable{
 };
 
 ros::Publisher pub;
+ros::Publisher pub2;
 namespace rvt = rviz_visual_tools;
 moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
 
@@ -30,12 +29,12 @@ moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
     std::cout << "puntos recibidos comandando..."<<"\n";
 
     moveit::planning_interface::MoveGroupInterface move_group("irb140_arm");
-    moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
+    // moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
 
     const robot_state::JointModelGroup* joint_model_group =
         move_group.getCurrentState()->getJointModelGroup("irb140_arm");
 
-    move_group.setMaxVelocityScalingFactor(1);
+    move_group.setMaxVelocityScalingFactor(0.01);
 
     ROS_INFO_NAMED("path_commander", "Reference frame: %s", move_group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("path_commander", "End effector link: %s", move_group.getEndEffectorLink().c_str());
@@ -65,7 +64,8 @@ moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
     moveit_msgs::RobotTrajectory trajectory;
     const double jump_threshold = 0.0;
     ///////////////////////////////////////////////////
-    const double eef_step = 0.01;
+    // const double eef_step = 0.1;
+    const double eef_step = msg->eef_step;
     ///////////////////////////////////////////////7
     double fraction = move_group.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory);
     ROS_INFO_NAMED("path_commander", "Visualizing plan (Cartesian path) (%.2f%% achieved)", fraction * 100.0);
@@ -74,7 +74,8 @@ moveit_visual_tools::MoveItVisualToolsPtr visual_tools_;
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     my_plan.trajectory_=trajectory;
-    // std::cout <<my_plan.trajectory_.joint_trajectory<<"\n";
+    // std::cout <<my_plan.trajectory_.joint_trajectory<<"\n";    //useful if you want to print the whole planned trajectory
+    pub2.publish(trajectory.joint_trajectory);
     std::cout <<"Puntos de interpolación"<<my_plan.trajectory_.joint_trajectory.points.size()<<"\n";
 
     // Visualize the plan in RViz
@@ -118,6 +119,9 @@ int main(int argc, char** argv)
   ROS_INFO("Esperando vector de Poses en topico robot_commander/cmd_path...");
   ros::Subscriber sub = node_handle.subscribe("robot_commander/cmd_path", 1000, &MoveEnable::cmdCallback, &mv);
   pub = node_handle.advertise<std_msgs::String>("robot_commander/path_done", 1000);
+
+  // pub2 = node_handle.advertise<moveit_msgs::RobotTrajectory>("robot_commander/robot_traj", 1000);
+  pub2 = node_handle.advertise<trajectory_msgs::JointTrajectory>("robot_commander/robot_traj", 1000);
 
   ros::waitForShutdown();
   return 0;
