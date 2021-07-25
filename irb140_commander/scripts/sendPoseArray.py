@@ -9,6 +9,11 @@ from irb140_commander.msg import PoseRPY
 import rospy
 import copy
 
+pub = rospy.Publisher('robot_commander/cmd_path', PoseRPYarray, queue_size=10)
+rospy.init_node('pathSender', anonymous=True)
+rate = rospy.Rate(1) # 10hz
+rate.sleep()
+
 lista=PoseRPYarray()
 punto=PoseRPY()
 punto.position.x=0.5;punto.position.y=0.3;punto.position.z=0.5
@@ -44,9 +49,5 @@ lista.poses.append(copy.deepcopy(punto))
 lista.eef_step=0.01
 # print(lista)
 
-pub = rospy.Publisher('robot_commander/cmd_path', PoseRPYarray, queue_size=10)
-rospy.init_node('pathSender', anonymous=True)
-rate = rospy.Rate(1) # 10hz
-rate.sleep()
 pub.publish(lista)
 print("enviado")

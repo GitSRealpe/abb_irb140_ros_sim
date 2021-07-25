@@ -65,8 +65,8 @@ catkin_install_python(PROGRAMS
   scripts/sendPose.py
   scripts/sendPoseArray.py
   scripts/sendPoseArray2.py
-  scripts/gripper.py
   scripts/gripper_routine.py
+  scripts/pick_routine.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

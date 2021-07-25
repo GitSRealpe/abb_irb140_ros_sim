@@ -251,7 +251,8 @@ Visualization Manager:
       Marker Topic: /moveit_visual_markers
       Name: MarkerArray
       Namespaces:
-        {}
+        Arrow: true
+        Text: true
       Queue Size: 100
       Value: true
     - Class: rviz/TF
@@ -357,7 +358,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.362752079963684
+      Distance: 2.689830780029297
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -365,17 +366,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.11712272465229034
-        Y: -0.05173145607113838
-        Z: 0.3935104310512543
+        X: 0.17077340185642242
+        Y: -0.152301624417305
+        Z: 0.4358430802822113
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.1847952604293823
+      Pitch: 0.6147957444190979
       Target Frame: <Fixed Frame>
-      Yaw: 0.15039050579071045
+      Yaw: 0.7553902864456177
     Saved: ~
 Window Geometry:
   Displays:
