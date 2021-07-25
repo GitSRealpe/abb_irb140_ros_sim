@@ -34,7 +34,6 @@ def gripper_action(apertura):
     gripper_pub.publish(grip_ctrl)
     print("gripper comandado")
 
-# gripper_action(0.23)
 gripper_action(0.23)
 
 punto.position.x=0.5;punto.position.y=0.0;punto.position.z=0.5
