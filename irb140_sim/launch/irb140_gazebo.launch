@@ -8,18 +8,14 @@
 		  <arg name="gui" value="true"/>
 		  <arg name="recording" value="false"/>
 		  <arg name="debug" value="false"/>
-			<arg name="world_name" value="$(find irb140_sim)/worlds/labsir_sim.world"/>
+			<arg name="world_name" value="$(find irb140_sim)/worlds/picking.world"/>
 		</include>
 
 		<!--Cargar robot-->
-		<param name="robot_description" command="$(find xacro)/xacro --inorder '$(find irb140_sim)/urdf/irb140.xacro' cam:=0" />
-		<arg name="x" default="0"/>
-		<arg name="y" default="0"/>
-		<arg name="z" default="0"/>
-
+	  <param name="robot_description" command="$(find xacro)/xacro '$(find irb140_sim)/urdf/irb140.xacro'"/>
 		<!--spawnear robot-->
 		<node name="irb140_gazebo" pkg="gazebo_ros" type="spawn_model" output="screen"
-					args="-urdf -param robot_description -model irb_140 -x $(arg x) -y $(arg y) -z $(arg z)"/>
+					args="-urdf -param robot_description -model irb_140 -x 0 -y 0 -z 0"/>
 
 		<!--Cargar controladores-->
 		<rosparam command="load" file="$(find irb140_sim)/config/joints/joints.yaml" />

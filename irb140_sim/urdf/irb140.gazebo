@@ -44,7 +44,7 @@
     <material>Gazebo/Orange</material>
   </gazebo>
 
-  <xacro:if value="${cam}">
+  <!-- <xacro:if value="${cam}">
     <gazebo reference="cam_link">
       <sensor name="camera" type="depth">
           <update_rate>20</update_rate>
@@ -63,8 +63,6 @@
   	<plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
             <baseline>0.2</baseline>
             <alwaysOn>true</alwaysOn>
-            <!-- Keep this zero, update_rate in the parent <sensor> tag
-              will control the frame rate. -->
             <updateRate>0.0</updateRate>
             <cameraName>camera_ir</cameraName>
             <imageTopicName>/camera/color/image_raw</imageTopicName>
@@ -88,5 +86,5 @@
           </plugin>
         </sensor>
     </gazebo>
-    </xacro:if>
+    </xacro:if> -->
 </robot>
