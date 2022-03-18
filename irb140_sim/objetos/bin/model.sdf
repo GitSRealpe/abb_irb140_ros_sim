@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+   <model name="bin">
+       <pose>0 0 0.01 1.57 0 1.57</pose>
+       <static>true</static>
+       <link name="link_00">
+       <pose>0.0 0 0 0 0 0</pose>
+       <visual name="visual_00">
+           <geometry>
+               <mesh><uri>model://bin/binv1.dae</uri></mesh>
+           </geometry>
+ 	       <material>
+           <script>
+             <name>Gazebo/Wood</name>
+             <uri>file://media/materials/scripts/gazebo.material</uri>
+           </script>
+         </material>
+       </visual>
+       <collision name="bottom">
+        <pose>0 0 0.0 1.57 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.6 0.4 0.01</size>
+          </box>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+            </ode>
+          </friction>
+        </surface>
+        <max_contacts>10</max_contacts>
+      </collision>
+      <collision name="back">
+       <pose>0.0 0.1 -0.20 0 0 0</pose>
+       <geometry>
+         <box>
+           <size>0.6 0.2 0.01</size>
+         </box>
+       </geometry>
+     </collision>
+     <collision name="front">
+      <pose>0.0 0.1 0.20 0 0 0</pose>
+      <geometry>
+        <box>
+          <size>0.6 0.2 0.01</size>
+        </box>
+      </geometry>
+    </collision>
+    <collision name="left">
+     <pose>-0.3 0.1 0.0 0 1.57 0</pose>
+     <geometry>
+       <box>
+         <size>0.4 0.2 0.01</size>
+       </box>
+     </geometry>
+   </collision>
+   <collision name="right">
+    <pose>0.3 0.1 0.0 0 1.57 0</pose>
+    <geometry>
+      <box>
+        <size>0.4 0.2 0.01</size>
+      </box>
+    </geometry>
+  </collision>
+       </link>
+   </model>
+</sdf>
