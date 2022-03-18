@@ -18,8 +18,9 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
+  <depend>gazebo_ros</depend>
+  <exec_depend>gazebo</exec_depend>
   <export>
-    <!-- Other tools can request additional information be placed here -->
-
+    <gazebo_ros gazebo_model_path="${prefix}/objetos/" />
   </export>
 </package>
