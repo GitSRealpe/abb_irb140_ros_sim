@@ -1,0 +1,239 @@
+<?xml version="1.0"?>
+<sdf version='1.6'>
+  <world name='default'>
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose frame=''>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <model name='ground_plane'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>10 10</size>
+            </plane>
+          </geometry>
+          <surface>
+            <contact>
+              <collide_bitmask>65535</collide_bitmask>
+              <ode />
+            </contact>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+              <torsional>
+                <ode />
+              </torsional>
+            </friction>
+            <bounce />
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>10 10</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grass</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic' />
+    <physics name='default_physics' default='0' type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+
+    <state world_name='default'>
+      <sim_time>1 232000000</sim_time>
+      <real_time>1 695560591</real_time>
+      <wall_time>1598855627 344616077</wall_time>
+      <iterations>1232</iterations>
+      <model name='ground_plane'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose frame=''>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>1.851972 1.648033 1.323922 0 0.363642 -2.444193</pose>
+        <view_controller>orbit</view_controller>
+        <!-- <projection_type>orthographic</projection_type> -->
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+
+    <model name="obj3">
+      <pose>0.5 0 0.3 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>1.0e-03</ixx>
+            <ixy>0</ixy>
+            <ixz>-0.0</ixz>
+            <iyy>1.0e-03</iyy>
+            <iyz>0.0</iyz>
+            <izz>1.0e-03</izz>
+          </inertia>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 0.05</size>
+            </box>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+
+    <model name="palo">
+      <pose>1 0 0.3 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.05 0.05 1</size>
+            </box>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass>1</mass>
+          <pose>0.0 0 -0.5 0 0 0</pose>
+          <inertia>
+            <ixx>1.0e-03</ixx>
+            <ixy>0</ixy>
+            <ixz>-0.0</ixz>
+            <iyy>1.0e-03</iyy>
+            <iyz>0.0</iyz>
+            <izz>1.0e-03</izz>
+          </inertia>
+        </inertial>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.05 0.05 1</size>
+            </box>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+
+    <model name='caja_7'>
+      <static>0</static>
+      <pose>5.4 -3.15 1 0 0 -1.57</pose>
+      <link name='link_00'>
+        <pose>0 0 0 0 0 0</pose>
+        <visual name='visual_00'>
+          <geometry>
+            <mesh>
+              <uri>model://5x5/5x5_50_7.dae</uri>
+              <scale>0.05 0.05 0.05</scale>
+            </mesh>
+          </geometry>
+        </visual>
+        <visual name="fondo">
+          <geometry>
+            <box>
+              <size>0.048 0.1 0.1</size>
+            </box>
+          </geometry>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.05 0.1 0.1</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode />
+            </contact>
+            <bounce />
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <inertial>
+          <inertia>
+            <ixx>0.009</ixx>
+            <iyy>0.008</iyy>
+            <izz>0.008</izz>
+          </inertia>
+        </inertial>
+      </link>
+    </model>
+
+    <!-- Model -->
+    <model name="2_estante">
+      <include>
+        <static>false</static>
+        <uri>model://2_estante</uri>
+        <pose> 0 0 1 0 0 0</pose>
+      </include>
+    </model>
+
+  </world>
+</sdf>
