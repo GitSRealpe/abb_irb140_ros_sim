@@ -1,26 +1,21 @@
 <launch>
-  <include file="$(find irb140_sim)/launch/irb140_gazebo.launch"></include>
-  <!-- The robot description was already loaded with the first gazebo sim launch, no need to reload it -->
-  <include file="$(find irb140_moveit_bin_pick)/launch/planning_context.launch">
-    <arg name="load_robot_description" value="false"/>
+
+  <!-- specify the planning pipeline -->
+  <arg name="pipeline" default="ompl" />
+
+  <!-- Gazebo specific options -->
+  <arg name="gazebo_gui" default="true"/>
+  <arg name="paused" default="false"/>
+
+  <!-- launch the gazebo simulator and spawn the robot -->
+  <include file="$(dirname)/gazebo.launch" >
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="gazebo_gui" value="$(arg gazebo_gui)"/>
   </include>
 
-  <!-- load joint states topic for moveit interface -->
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="use_gui" value="false"/>
-    <rosparam param="source_list">[irb_140/joint_states]</rosparam>
-  </node>
-
-  <!-- Run the main MoveIt! executable without trajectory execution (we do not have controllers configured by default) -->
-  <include file="$(find irb140_moveit_bin_pick)/launch/move_group.launch">
-    <arg name="allow_trajectory_execution" value="true"/>
-    <arg name="fake_execution" value="false"/>
-    <arg name="info" value="true"/>
-    <arg name="debug" value="false"/>
-    <arg name="load_robot_description" value="false"/>
+  <include file="$(dirname)/demo.launch" pass_all_args="true">
+    <!-- robot description is loaded by gazebo.launch, to enable Gazebo features -->
+    <arg name="load_robot_description" value="false" />
+    <arg name="moveit_controller_manager" value="ros_control" />
   </include>
-
-  <!-- Show in Rviz -->
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find irb140_moveit_bin_pick)/launch/moveit.rviz"/>
-
 </launch>

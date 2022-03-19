@@ -1,5 +1,6 @@
 controller_list:
   - name: fake_irb140_arm_controller
+    type: $(arg fake_execution_type)
     joints:
       - joint_1
       - joint_2
@@ -7,6 +8,6 @@ controller_list:
       - joint_4
       - joint_5
       - joint_6
-initial:  # Define initial robot poses.
+initial:  # Define initial robot poses per group
   - group: irb140_arm
     pose: home
