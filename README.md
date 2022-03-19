@@ -8,7 +8,7 @@ Please go to this repository [**Wiki**](https://github.com/GitSRealpe/abb_irb140
 **Author:** Sebastian Realpe Rua, mainly for use in the National University of Colombia robotics lab: **LABSIR**.
 
 # Brief overview
-As already stated, this porject is a collection of ROS packages for the simulation of a typical robot application; [Simulation](https://github.com/GitSRealpe/abb_irb140_ros_sim/wiki/2.-Bringups-and-simulation), [Motion planning](https://github.com/GitSRealpe/abb_irb140_ros_sim/wiki/4.-Moveit-demos), [Motion request](https://github.com/GitSRealpe/abb_irb140_ros_sim/wiki/5.-Moveit-API) and some [Picking](https://github.com/GitSRealpe/abb_irb140_ros_sim/wiki/6.-Pick-and-Place-Demo) of objects. Here is a brief description of what this packages has to offer:
+As already stated, this project is a collection of ROS packages for the simulation of a typical robot application; [Simulation](https://github.com/GitSRealpe/abb_irb140_ros_sim/wiki/2.-Bringups-and-simulation), [Motion planning](https://github.com/GitSRealpe/abb_irb140_ros_sim/wiki/4.-Moveit-demos), [Motion request](https://github.com/GitSRealpe/abb_irb140_ros_sim/wiki/5.-Moveit-API) and some [Picking](https://github.com/GitSRealpe/abb_irb140_ros_sim/wiki/6.-Pick-and-Place-Demo) of objects. Here is a brief description of what this packages has to offer:
 * [Robot description and Simulation](#robot-description-and-simulation)
 * [Two-finger Gripper](#two-finger-gripper)
 * [Moveit demos](#moveit-demos)
