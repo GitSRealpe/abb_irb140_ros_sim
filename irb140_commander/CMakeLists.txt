@@ -34,13 +34,14 @@ add_action_files(
   FILES
   Fibonacci.action
   Joints.action
+  PoseRPY.action
 )
 
 add_message_files(
   FILES
   Joints.msg
   # PoseRPY.msg
-  # RPY.msg
+  RPY.msg
   # PoseRPYarray.msg
   # OrientConst.msg
 )
@@ -91,7 +92,7 @@ target_link_libraries(joint_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 add_dependencies(joint_commander irb140_commander_generate_messages_cpp)
 install(TARGETS joint_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-add_executable(pose_commander src/pose_commander.cc)
+add_executable(pose_commander src/pose_commander.cpp)
 target_link_libraries(pose_commander ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 add_dependencies(pose_commander irb140_commander_generate_messages_cpp)
 install(TARGETS pose_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
