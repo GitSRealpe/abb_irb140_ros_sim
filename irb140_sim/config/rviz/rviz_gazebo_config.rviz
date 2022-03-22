@@ -93,7 +93,7 @@ Visualization Manager:
         world:
           Value: true
       Marker Alpha: 1
-      Marker Scale: 1
+      Marker Scale: 0.30000001192092896
       Name: TF
       Show Arrows: true
       Show Axes: true
