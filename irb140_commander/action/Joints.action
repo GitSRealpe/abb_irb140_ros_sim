@@ -1,6 +1,5 @@
 #goal definition
 float32[] joints
-string planning_group
 ---
 #result definition
 string estado
