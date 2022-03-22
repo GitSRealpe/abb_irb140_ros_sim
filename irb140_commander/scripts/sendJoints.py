@@ -1,19 +1,16 @@
-#!/usr/bin/env python
-from geometry_msgs.msg import PoseStamped
-import std_msgs.msg
-from irb140_commander.msg import Num
-
+#!/usr/bin/env python3
 import rospy
-import copy
+import std_msgs.msg
+from irb140_commander.msg import Joints
 
-pub = rospy.Publisher('robot_commander/cmd_vel', Num, queue_size=10)
-rospy.init_node('jointSender', anonymous=True)
-rate = rospy.Rate(1) # 10hz
-rate.sleep()
+joints_pub = rospy.Publisher("robot_commander/cmd_joints", Joints, queue_size=10)
+rospy.init_node("pathSender", anonymous=True)
 
-juntas=Num()
-juntas.joints[0]=-1.0;
-juntas.joints[2]=0.57;
+joints = Joints()
+joints.joints.append(0)
+joints.joints.append(1)
+joints.joints.append(2)
+joints.joints.append(3)
+joints.joints[2] = 5
 
-pub.publish(juntas)
-print("enviado")
+joints_pub.publish(joints)
