@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  actionlib_msgs
   interactive_markers
   moveit_core
   moveit_visual_tools
@@ -28,25 +29,33 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+add_action_files(
+  DIRECTORY action
+  FILES
+  Fibonacci.action
+  Joints.action
+)
+
 add_message_files(
   FILES
-  PoseRPY.msg
-  RPY.msg
-  Num.msg
-  PoseRPYarray.msg
-  OrientConst.msg
+  Joints.msg
+  # PoseRPY.msg
+  # RPY.msg
+  # PoseRPYarray.msg
+  # OrientConst.msg
 )
 
 generate_messages(
  DEPENDENCIES
  geometry_msgs
  std_msgs
+ actionlib_msgs
 )
 
 catkin_package(
   #INCLUDE_DIRS include
   LIBRARIES irb140_commander
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime actionlib_msgs
   #DEPENDS system_lib
 )
 
@@ -95,4 +104,9 @@ install(TARGETS path_commander DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 add_executable(get_pose src/get_pose.cc)
 target_link_libraries(get_pose ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 add_dependencies(get_pose irb140_commander_generate_messages_cpp)
+install(TARGETS get_pose DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(action_test src/action_test.cpp)
+target_link_libraries(action_test ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_dependencies(action_test irb140_commander_generate_messages_cpp)
 install(TARGETS get_pose DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
