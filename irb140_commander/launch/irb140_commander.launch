@@ -1,6 +1,5 @@
 <launch>
-  <node pkg="irb140_commander" type="joint_commander" name="joint_commander" output="screen"/>
-  <node pkg="irb140_commander" type="pose_commander" name="pose_commander" output="screen"/>
-  <!-- <node pkg="irb140_commander" type="orientation_constraint" name="orientation_constraint" output="screen"/> -->
-  <node pkg="irb140_commander" type="path_commander" name="path_commander" output="screen"/>
+  <node pkg="irb140_commander" type="joint_commander" name="joint_commander" args="irb140_arm" output="screen" />
+  <!-- <node pkg="irb140_commander" type="pose_commander" name="pose_commander" output="screen"/>
+  <node pkg="irb140_commander" type="path_commander" name="path_commander" output="screen"/> -->
 </launch>
