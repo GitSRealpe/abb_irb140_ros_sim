@@ -1,0 +1,32 @@
+<sdf version="1.6">
+  <model name="1_estante">
+    <static>1</static>
+    <pose>0 0 0.0 0 1.57 0</pose>
+    <link name="link_00">
+      <pose>-1.0 0 0 0 0 0</pose>
+      <visual name="visual_00">
+        <geometry>
+          <mesh>
+            <uri>model://1_estante/1_estante.obj</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Wood</name>
+          </script>
+        </material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://1_estante/1_estante.obj</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+      </collision>
+
+    </link>
+  </model>
+</sdf>
