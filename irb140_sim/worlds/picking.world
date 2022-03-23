@@ -162,10 +162,24 @@
       </include>
     </model>
 
-    <model name="bookshelf">
+    <!-- <model name="bookshelf">
       <pose>0 -1 0 0 0 3.1416</pose>
       <include>
         <uri>model://bookshelf</uri>
+      </include>
+    </model> -->
+
+    <model name="estante">
+      <pose>0.5 -0.7 0 0 0 1.57</pose>
+      <include>
+        <uri>model://1_estante</uri>
+      </include>
+    </model>
+
+    <model name="camara">
+      <pose>0.5 0 1.3 0 1.57 3.14</pose>
+      <include>
+        <uri>model://camara</uri>
       </include>
     </model>
 
@@ -196,6 +210,7 @@
         <uri>model://camara</uri>
       </include>
     </model>
+
 
   </world>
 </sdf>
