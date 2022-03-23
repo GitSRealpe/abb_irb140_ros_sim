@@ -19,7 +19,7 @@ protected:
   moveit::planning_interface::MoveGroupInterfacePtr move_group;
 
 public:
-    PoseRPYAction(std::string name, std::string planning_group) : as_(nh_, name, false),
+  PoseRPYAction(std::string name, std::string planning_group) : as_(nh_, name, false),
                                                                 action_name_(name)
   {
     // register the goal and preempt callbacks
@@ -54,6 +54,16 @@ public:
     ROS_INFO_NAMED("pose_commander", "End effector link: %s", move_group->getEndEffectorLink().c_str());
     move_group->setNumPlanningAttempts(10);
 
+    moveit_msgs::JointConstraint jc;
+    jc.joint_name = "joint_6";
+    jc.weight = 1;
+    jc.tolerance_above = 1.57;
+    jc.tolerance_below = 1.57;
+
+    moveit_msgs::Constraints constraints;
+    constraints.joint_constraints.push_back(jc);
+    move_group->setPathConstraints(constraints);
+
     tf2::Quaternion q;
     q.setRPY(goal->rpy.roll, goal->rpy.pitch, goal->rpy.yaw); // Create this quaternion from roll/pitch/yaw (in radians)
     q.normalize();
@@ -66,7 +76,7 @@ public:
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     bool success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    ROS_INFO_NAMED("pose_commander", "Pose plan %s", success ? "Exito" : "FAILED");
+    ROS_INFO_NAMED("pose_commander", "Pose plan %s", success ? "OK" : "FAILED");
     // actually move the real robot
     move_group->move();
     move_group->clearPoseTargets();
