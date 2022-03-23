@@ -15,9 +15,9 @@ protected:
   std::string action_name_;
   irb140_commander::JointsFeedback feedback_;
   irb140_commander::JointsResult result_;
+  moveit::planning_interface::MoveGroupInterfacePtr move_group;
 
 public:
-  moveit::planning_interface::MoveGroupInterfacePtr move_group;
   JointsAction(std::string name, std::string planning_group) : as_(nh_, name, false),
                                                                action_name_(name)
   {
