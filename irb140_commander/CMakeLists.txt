@@ -40,10 +40,10 @@ add_action_files(
 add_message_files(
   FILES
   Joints.msg
-  # PoseRPY.msg
+  PoseRPY.msg
   RPY.msg
-  # PoseRPYarray.msg
-  # OrientConst.msg
+  PoseRPYarray.msg
+  OrientConst.msg
 )
 
 generate_messages(
