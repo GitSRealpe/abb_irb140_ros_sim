@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+    <model name="scissors">
+        <pose>0 0 0.01 0 0 0</pose>
+        <link name="link_00">
+            <pose>0.0 0 0 0 0 0.26</pose>
+            <visual name="visual_00">
+                <geometry>
+                    <mesh>
+                        <uri>model://scissors/textured.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+            <collision name="filos">
+                <pose> 0.03 0.05 0.005 0 0 -0.26</pose>
+                <geometry>
+                    <!-- <mesh>
+                        <uri>model://scissors/collision.dae</uri>
+                    </mesh> -->
+                    <box>
+                        <size>0.02 0.20 0.01</size>
+                    </box>
+                </geometry>
+            </collision>
+            <collision name="ojo_izq">
+                <pose> 0.03 -0.03 0.005 0 0 0</pose>
+                <geometry>
+                    <box>
+                        <size>0.02 0.05 0.01</size>
+                    </box>
+                </geometry>
+            </collision>
+            <collision name="ojo_der">
+                <pose> -0.015 -0.01 0.005 0 0 -0.52</pose>
+                <geometry>
+                    <box>
+                        <size>0.02 0.05 0.01</size>
+                    </box>
+                </geometry>
+            </collision>
+            <inertial>
+                <pose> 0.015 0.003 0.007 0 0 -0.26</pose>
+                <inertia>
+                    <ixx>0.9998e-02</ixx>
+                    <ixy>-0.0</ixy>
+                    <ixz>-0.0</ixz>
+                    <iyy>0.9998e-02</iyy>
+                    <iyz>0.0</iyz>
+                    <izz>0.9998e-02</izz>
+                </inertia>
+            </inertial>
+        </link>
+    </model>
+</sdf>
