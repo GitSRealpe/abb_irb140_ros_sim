@@ -4,14 +4,14 @@ import sys
 
 import actionlib
 
-# Brings in the messages used by the fibonacci action, including the
+# Brings in the messages used by the joints action, including the
 # goal message and the result message.
 import irb140_commander.msg
 
 
-def fibonacci_client():
+def joints_client():
     # Creates the SimpleActionClient, passing the type of the action
-    # (FibonacciAction) to the constructor.
+    # (jointsAction) to the constructor.
     client = actionlib.SimpleActionClient("joints", irb140_commander.msg.JointsAction)
 
     # Waits until the action server has started up and started
@@ -28,15 +28,15 @@ def fibonacci_client():
     client.wait_for_result()
 
     # Prints out the result of executing the action
-    return client.get_result()  # A FibonacciResult
+    return client.get_result()  # A jointsResult
 
 
 if __name__ == "__main__":
     try:
         # Initializes a rospy node so that the SimpleActionClient can
         # publish and subscribe over ROS.
-        rospy.init_node("fibonacci_client_py")
-        result = fibonacci_client()
+        rospy.init_node("joints_client_py")
+        result = joints_client()
         print("Result:", result.estado)
     except rospy.ROSInterruptException:
         print("program interrupted before completion", file=sys.stderr)
