@@ -29,6 +29,12 @@ gripper_controller:
   joint: gripper_body__left_ext
 
 # gripper_controller:
+#   type: effort_controllers/JointPositionController
+#   joint: gripper_body__left_ext
+#   # pid: {p: 1.5, i: 0.0005, d: 0.5, i_min: -1, i_max: 1}
+#   pid: {p: 5.0, i: 2.0, d: 0.01, i_clamp_min: -1, i_clamp_max: 1}
+
+# gripper_controller:
 #   type: position_controllers/JointTrajectoryController
 #   joints:
 #     - gripper_body__left_ext
