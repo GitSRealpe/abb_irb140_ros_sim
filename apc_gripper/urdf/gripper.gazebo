@@ -80,7 +80,7 @@
     </plugin>
   </gazebo>
 
-  <gazebo reference="left_finger">
+  <!-- <gazebo reference="left_finger">
     <sensor name="detector" type="logical_camera">
       <logical_camera>
         <near>0.032</near>
@@ -103,9 +103,9 @@
         </friction>
       </surface>
     </collision>
-  </gazebo>
+  </gazebo> -->
 
-  <gazebo reference="right_finger">
+  <!-- <gazebo reference="right_finger">
     <sensor name="detector_right" type="logical_camera">
       <logical_camera>
         <near>0.032</near>
@@ -128,7 +128,7 @@
         </friction>
       </surface>
     </collision>
-  </gazebo>
+  </gazebo> -->
 
 
   <!-- Base -->
