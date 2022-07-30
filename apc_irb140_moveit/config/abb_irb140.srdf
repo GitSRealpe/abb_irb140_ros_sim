@@ -28,13 +28,20 @@
         <joint name="joint_6" value="0"/>
     </group_state>
     <group_state name="away" group="irb140_arm">
-        <joint name="joint_1" value="-1.57"/>
-        <joint name="joint_2" value="-0.6904"/>
-        <joint name="joint_3" value="0.6713"/>
+        <joint name="joint_1" value="-0.5728"/>
+        <joint name="joint_2" value="-0.3297"/>
+        <joint name="joint_3" value="0.2497"/>
         <joint name="joint_4" value="0"/>
-        <joint name="joint_5" value="0"/>
+        <joint name="joint_5" value="1.1643"/>
         <joint name="joint_6" value="0"/>
     </group_state>
+    <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
+    <passive_joint name="gripper_body__left_ext"/>
+    <passive_joint name="left_ext__left_finger"/>
+    <passive_joint name="gripper_body__left_int"/>
+    <passive_joint name="gripper_body__right_ext"/>
+    <passive_joint name="right_ext__right_finger"/>
+    <passive_joint name="gripper_body__right_int"/>
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="base_link" link2="link_1" reason="Adjacent"/>
     <disable_collisions link1="base_link" link2="link_2" reason="Never"/>
@@ -42,7 +49,6 @@
     <disable_collisions link1="gripper_body" link2="left_ext" reason="Adjacent"/>
     <disable_collisions link1="gripper_body" link2="left_finger" reason="Never"/>
     <disable_collisions link1="gripper_body" link2="left_int" reason="Adjacent"/>
-    <disable_collisions link1="gripper_body" link2="link_2" reason="Never"/>
     <disable_collisions link1="gripper_body" link2="link_3" reason="Never"/>
     <disable_collisions link1="gripper_body" link2="link_5" reason="Never"/>
     <disable_collisions link1="gripper_body" link2="link_6" reason="Adjacent"/>
@@ -58,7 +64,7 @@
     <disable_collisions link1="left_ext" link2="right_ext" reason="Never"/>
     <disable_collisions link1="left_ext" link2="right_finger" reason="Never"/>
     <disable_collisions link1="left_ext" link2="right_int" reason="Never"/>
-    <disable_collisions link1="left_finger" link2="left_int" reason="Default"/>
+    <disable_collisions link1="left_finger" link2="left_int" reason="Never"/>
     <disable_collisions link1="left_finger" link2="link_3" reason="Never"/>
     <disable_collisions link1="left_finger" link2="link_4" reason="Never"/>
     <disable_collisions link1="left_finger" link2="link_5" reason="Never"/>
@@ -76,6 +82,7 @@
     <disable_collisions link1="link_1" link2="link_2" reason="Adjacent"/>
     <disable_collisions link1="link_1" link2="link_3" reason="Never"/>
     <disable_collisions link1="link_1" link2="link_5" reason="Never"/>
+    <disable_collisions link1="link_1" link2="link_6" reason="Never"/>
     <disable_collisions link1="link_2" link2="link_3" reason="Adjacent"/>
     <disable_collisions link1="link_2" link2="link_4" reason="Never"/>
     <disable_collisions link1="link_2" link2="link_5" reason="Never"/>
@@ -100,5 +107,5 @@
     <disable_collisions link1="link_6" link2="right_int" reason="Never"/>
     <disable_collisions link1="right_ext" link2="right_finger" reason="Adjacent"/>
     <disable_collisions link1="right_ext" link2="right_int" reason="Never"/>
-    <disable_collisions link1="right_finger" link2="right_int" reason="Default"/>
+    <disable_collisions link1="right_finger" link2="right_int" reason="Never"/>
 </robot>

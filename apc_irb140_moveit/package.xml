@@ -1,6 +1,6 @@
 <package>
 
-  <name>irb140_moveit_bin_pick</name>
+  <name>apc_irb140_moveit</name>
   <version>0.3.0</version>
   <description>
      An automatically generated package with all the configuration and launch files for using the abb_irb140 with the MoveIt Motion Planning Framework
@@ -35,7 +35,7 @@
   <!-- <run_depend>gazebo_ros_control</run_depend> -->
   <!-- This package is referenced in the warehouse launch files, but does not build out of the box at the moment. Commented the dependency until this works. -->
   <!-- <run_depend>warehouse_ros_mongo</run_depend> -->
-  <run_depend>irb140_sim</run_depend>
+  <run_depend>apc_irb140</run_depend>
 
 
 </package>
