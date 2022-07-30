@@ -1,0 +1,10 @@
+#goal definition
+geometry_msgs/Point position
+RPY rpy
+---
+#result definition
+string estado
+---
+#feedback
+int16 trayectoria
+float32 porcentaje

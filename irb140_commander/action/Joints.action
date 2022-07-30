@@ -1,0 +1,8 @@
+#goal definition
+float32[] joints
+---
+#result definition
+string estado
+---
+#feedback
+int16 porcentaje_trayectoria

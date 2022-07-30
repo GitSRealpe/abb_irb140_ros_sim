@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+    <model name="tuna">
+        <pose>0 0 0.01 0 0 0</pose>
+        <link name="link_00">
+            <pose>0.0 0 0 0 0 0</pose>
+            <visual name="visual_00">
+                <geometry>
+                    <mesh>
+                        <uri>model://tuna/textured.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+            <collision name="collision">
+                <geometry>
+                    <mesh>
+                        <uri>model://tuna/collision.dae</uri>
+                    </mesh>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>100</mu>
+                            <mu2>50</mu2>
+                            <fdir1>0.0 0.0 0.0</fdir1>
+                            <slip1>0.0</slip1>
+                            <slip2>0.0</slip2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <max_vel>0.1</max_vel>
+                            <min_depth>0.001</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+                <max_contacts>3</max_contacts>
+            </collision>
+            <inertial>
+                <pose> -0.026 -0.022 0.013 0 0 0</pose>
+                <inertia>
+                    <ixx>1.999999999999999e-02</ixx>
+                    <ixy>0.0</ixy>
+                    <ixz>0.0</ixz>
+                    <iyy>1.999999999999999e-02</iyy>
+                    <iyz>0.0</iyz>
+                    <izz>1.999999999999999e-02</izz>
+                </inertia>
+            </inertial>
+        </link>
+    </model>
+</sdf>

@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="banana">
+    <pose>0 0 0.01 0 0 0</pose>
+    <link name="link">
+      <pose>0.0 0 0 0 0 0</pose>
+      <visual name="visual_00">
+        <geometry>
+          <mesh>
+            <uri>model://banana/textured.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://banana/collision.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>100</mu>
+              <mu2>50</mu2>
+              <fdir1>0.0 0.0 0.0</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <max_vel>0.1</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+        </surface>
+        <max_contacts>4</max_contacts>
+      </collision>
+      <inertial>
+        <pose> -0.01 0.004 0.017 0 0 0</pose>
+        <inertia>
+          <ixx>9.999999999999999e-04</ixx>
+          <ixy>-0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>9.999999999999999e-04</iyy>
+          <iyz>-0.0</iyz>
+          <izz>9.999999999999999e-04</izz>
+        </inertia>
+      </inertial>
+    </link>
+  </model>
+</sdf>

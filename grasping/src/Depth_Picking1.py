@@ -21,6 +21,7 @@ from sensor_msgs.msg import Image, CameraInfo
 from std_msgs.msg import Float32MultiArray
 from models.common import post_process_output
 from utils.timeit import TimeIt
+from helpers.transforms import *
 
 device = torch.device('cpu')
 
@@ -28,7 +29,7 @@ device = torch.device('cpu')
 MODEL_FILE = 'ggcnn2_093'
 rgbo = []
 rgbfin = []
-cajon =3
+cajon =1
 if cajon==1 or cajon==4 :
    crop_size=300
    y_off=50
@@ -347,23 +348,23 @@ class image_converter:
         cmd_msg.data = [x, y, z, ang, rwidth]
         cmd_pub.publish(cmd_msg)
 
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(1, 2, 1)
-        ax.imshow(depthfin1, cmap='gray')
-        for g in grasps:
-            g.plot(ax)
-        ax.set_title('Depth')
-        ax.axis('off')
+        punto=gmsg.Pose()
+        #invertidos porque si
+        punto.position.x=z
+        punto.position.y=-x
+        punto.position.z=-y
+        print punto
 
-        ax = fig.add_subplot(1, 2, 2)
+        print convert_pose(punto,"cam_link","world")
+
+        fig = plt.figure(figsize=(10, 10))
+        ax = fig.add_subplot(1, 1, 1)
         ax.imshow(rgbfin)
         for g in grasps:
             g.plot(ax)
-        ax.set_title('RGB')
+        ax.set_title('rgb')
         ax.axis('off')
-        plt.pause(0.05)
         plt.show()
-
 
 
 

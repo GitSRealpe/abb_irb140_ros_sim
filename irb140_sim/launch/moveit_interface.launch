@@ -1,0 +1,22 @@
+<launch>
+    <!-- By default, we are not in debug mode -->
+    <arg name="debug" default="false" />
+
+    <arg name="use_gui" default="false" />
+
+    <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
+    <include file="$(find irb140_moveit_bin_pick)/launch/move_group.launch">
+        <arg name="allow_trajectory_execution" value="true" />
+        <arg name="moveit_controller_manager" value="ros_control" />
+        <arg name="fake_execution_type" value="interpolate" />
+        <arg name="info" value="true" />
+        <arg name="debug" value="false" />
+        <arg name="pipeline" value="ompl" />
+        <arg name="load_robot_description" value="false" />
+    </include>
+
+    <arg name="scene_file" default="$(find irb140_sim)/worlds/scena.scene" />
+    <node name="moveit_publish_scene_from_text" pkg="moveit_ros_planning" type="moveit_publish_scene_from_text" args="$(arg scene_file)" />
+
+</launch>
+  

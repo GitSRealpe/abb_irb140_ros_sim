@@ -1,3 +1,0 @@
-/home/sebastian/catkin_ws/src/abb_irb140_ros_sim/tests/gazebo_plugins/pose_link/build/CMakeFiles/edit_cache.dir
-/home/sebastian/catkin_ws/src/abb_irb140_ros_sim/tests/gazebo_plugins/pose_link/build/CMakeFiles/rebuild_cache.dir
-/home/sebastian/catkin_ws/src/abb_irb140_ros_sim/tests/gazebo_plugins/pose_link/build/CMakeFiles/pose_link.dir

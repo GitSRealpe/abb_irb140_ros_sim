@@ -7,7 +7,6 @@
            controller_joint_names: [joint_1, joint_2, ... joint_N]
        - Update with joint names for your robot (in order expected by rbt controller)
        - and uncomment the following line: -->
-
   <param name="move_group/trajectory_execution/allowed_execution_duration_scaling" value="5.0" />
   <param name="move_group/trajectory_execution/execution_duration_monitoring" value="false" />
 
@@ -18,6 +17,7 @@
   <arg name="sim" default="false" />
   <!-- <arg name="robot_ip" unless="$(arg sim)" /> -->
   <arg name="robot_ip" value="169.254.145.7"/>
+  <!-- <arg name="robot_ip" value="192.168.1.102"/> -->
 
   <!-- load the robot_description parameter before launching ROS-I nodes -->
   <include file="$(find irb140_moveit_real)/launch/planning_context.launch" >
@@ -46,8 +46,13 @@
   </include>
 
   <include file="$(find irb140_moveit_real)/launch/moveit_rviz.launch">
-    <arg name="config" value="true"/>
+    <arg name="rviz_config" value="$(find irb140_moveit_real)/launch/moveit.rviz"/>
   </include>
+
+  <!-- cargar los scripts del commander -->
+  <node pkg="irb140_commander" type="joint_commander" name="joint_commander" output="screen"/>
+  <node pkg="irb140_commander" type="pose_commander" name="pose_commander" output="screen"/>
+  <node pkg="irb140_commander" type="path_commander" name="path_commander" output="screen"/>
 
 
 </launch>
