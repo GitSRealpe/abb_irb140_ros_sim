@@ -7,9 +7,9 @@
 		<arg name="gui" value="true" />
 		<arg name="recording" value="false" />
 		<arg name="debug" value="false" />
-		<arg name="world_name" value="$(find irb140_sim)/worlds/test.world" />
+		<arg name="world_name" value="$(find apc_irb140)/worlds/test.world" />
 	</include>
 
 	<!-- Open Rviz -->
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find irb140_sim)/config/rviz/rviz_gazebo_config.rviz" />
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find apc_irb140)/config/rviz/rviz_gazebo_config.rviz" />
 </launch>

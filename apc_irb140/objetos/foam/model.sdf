@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+    <model name="foam">
+        <pose>0 0 0.01 0 0 0</pose>
+        <link name="link_00">
+            <pose>0.0 0 0 0 0 0</pose>
+            <visual name="visual_00">
+                <geometry>
+                    <mesh>
+                        <uri>model://foam/textured.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+            <collision name="collision">
+                <geometry>
+                    <mesh>
+                        <uri>model://foam/collision.dae</uri>
+                    </mesh>
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                            <mu>0.5</mu>
+                            <mu2>0.5</mu2>
+                            <fdir1>0.0 0.0 0.0</fdir1>
+                            <slip1>0.0</slip1>
+                            <slip2>0.0</slip2>
+                        </ode>
+                    </friction>
+                    <contact>
+                        <ode>
+                            <max_vel>0.1</max_vel>
+                            <min_depth>0.001</min_depth>
+                        </ode>
+                    </contact>
+                </surface>
+                <max_contacts>4</max_contacts>
+            </collision>
+            <inertial>
+                <pose> -0.019 0.017 0.025 0 0 0</pose>
+                <!-- <inertia>
+                    <ixx>9.999999999999999e-04</ixx>
+                    <ixy>0.0</ixy>
+                    <ixz>0.0</ixz>
+                    <iyy>9.999999999999999e-04</iyy>
+                    <iyz>-0.0</iyz>
+                    <izz>9.999999999999999e-04</izz>
+                </inertia> -->
+                <inertia>
+                    <ixx>2.0e-03</ixx>
+                    <ixy>0.0</ixy>
+                    <ixz>0.0</ixz>
+                    <iyy>2.0e-03</iyy>
+                    <iyz>-0.0</iyz>
+                    <izz>2.0e-03</izz>
+                </inertia>
+                <!-- <inertia>
+                    <ixx>0.9999999999999998e-04</ixx>
+                    <ixy>-0.0</ixy>
+                    <ixz>-0.0</ixz>
+                    <iyy>0.9999999999999998e-04</iyy>
+                    <iyz>0.0</iyz>
+                    <izz>0.9999999999999998e-04</izz>
+                </inertia> -->
+            </inertial>
+        </link>
+    </model>
+</sdf>

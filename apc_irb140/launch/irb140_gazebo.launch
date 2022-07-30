@@ -6,7 +6,7 @@
 	<arg name="robot_name" default="/" />
 
 	<!-- Load the urdf into the parameter server. -->
-	<arg name="robot_xacro" value="$(find irb140_sim)/urdf/irb140.xacro robot_namespace:=$(arg robot_name)" />
+	<arg name="robot_xacro" value="$(find apc_irb140)/urdf/irb140.xacro robot_namespace:=$(arg robot_name)" />
 
 	<param name="robot_description" command="$(find xacro)/xacro $(arg robot_xacro)" />
 
@@ -17,16 +17,17 @@
 		<arg name="gui" value="true" />
 		<arg name="recording" value="false" />
 		<arg name="debug" value="false" />
-		<arg name="world_name" value="$(find irb140_sim)/worlds/picking.world" />
+		<!-- <arg name="world_name" value="$(find apc_irb140)/worlds/layout.world" /> -->
+		<arg name="world_name" value="$(find apc_irb140)/worlds/picking.world" />
 	</include>
 
 	<!--spawnear robot-->
-	<node name="irb140_gazebo" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model irb_140 -x 0 -y 0 -z 0" />
+	<node name="spawn_irb140_gazebo" pkg="gazebo_ros" type="spawn_model" output="screen" args="-urdf -param robot_description -model irb_140 -x 0 -y 0 -z 0" />
 
 	<!--Cargar controladores-->
-	<rosparam command="load" file="$(find irb140_sim)/config/joints/joints.yaml" />
+	<rosparam command="load" file="$(find apc_irb140)/config/controllers.yaml" />
 
-	<!--Controladores-->
+	<!--Lanzar controladores-->
 	<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_state_controller arm_controller gripper_controller" />
 
 	<!-- convert joint states to TF transforms for rviz, etc -->
@@ -35,6 +36,6 @@
 	</node>
 
 	<!-- Open Rviz -->
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find irb140_sim)/config/rviz/rviz_gazebo_config.rviz" />
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find apc_irb140)/config/rviz_gazebo_config.rviz" />
 
 </launch>

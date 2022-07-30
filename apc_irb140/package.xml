@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>apc_irb140</name>
+  <version>0.0.0</version>
+  <description>The apc_irb140 package</description>
+
+  <maintainer email="unal@todo.todo">unal</maintainer>
+  <license>TODO</license>
+
+  <url type="repository">https://github.com/GitSRealpe/abb_irb140_ros_sim</url>
+  <author email="srealper@unal.edu.co">GitSRealpe</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>apc_gripper</depend>
+  <depend>roboticsgroup_upatras_gazebo_plugins</depend>
+
+  <depend>controller_manager</depend>
+  <depend>joint_trajectory_controller</depend>
+  <depend>effort_controllers</depend>
+  <depend>rqt_joint_trajectory_controller</depend>
+  <depend>moveit</depend>
+  <depend>moveit_visual_tools</depend>
+
+  <depend>gazebo_ros</depend>
+  <depend>gazebo_ros_control</depend>
+  <exec_depend>gazebo</exec_depend>
+  <export>
+    <gazebo_ros gazebo_model_path="${prefix}/objetos/" />
+  </export>
+</package>

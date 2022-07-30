@@ -259,7 +259,7 @@ Visualization Manager:
       Unreliable: false
       Value: true
     - Class: moveit_rviz_plugin/PlanningScene
-      Enabled: true
+      Enabled: false
       Move Group Namespace: ""
       Name: PlanningScene
       Planning Scene Topic: move_group/monitored_planning_scene
@@ -360,7 +360,7 @@ Visualization Manager:
         Robot Alpha: 1
         Show Robot Collision: false
         Show Robot Visual: true
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -397,17 +397,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.3347422480583191
-        Y: -0.4477818012237549
-        Z: 1.7881393432617188e-07
+        X: 0.6288565993309021
+        Y: -0.09574365615844727
+        Z: -2.980232238769531e-07
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.42039763927459717
+      Pitch: 0.710397481918335
       Target Frame: <Fixed Frame>
-      Yaw: 5.808578014373779
+      Yaw: 0.4053920805454254
     Saved: ~
 Window Geometry:
   Displays:
