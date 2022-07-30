@@ -1,0 +1,19 @@
+<launch>
+
+  <param name="robot_description" command="$(find xacro)/xacro '$(find apc_irb140)/urdf/irb140.xacro'" />
+  <rosparam command="load" file="$(find apc_abb_interface)/config/joint_names.yaml" />
+
+  <include file="$(find abb_driver)/launch/robot_interface.launch">
+    <arg name="robot_ip" value="169.254.145.7" />
+    <!-- <arg name="robot_ip" value="192.168.1.102" /> -->
+  </include>
+
+  <!-- combine joint values -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <node pkg="apc_abb_interface" type="gripper_state.py" name="gripper_state" output="screen" />
+
+  <!-- Show in Rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find apc_irb140)/config/rviz_config.rviz" />
+
+</launch>
