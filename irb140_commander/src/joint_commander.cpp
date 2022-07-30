@@ -4,8 +4,9 @@
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit_visual_tools/moveit_visual_tools.h>
 
-// #include <sstream>
 #include "iostream"
+
+namespace rvt = rviz_visual_tools;
 
 class JointsAction
 {
@@ -16,6 +17,7 @@ protected:
   irb140_commander::JointsFeedback feedback_;
   irb140_commander::JointsResult result_;
   moveit::planning_interface::MoveGroupInterfacePtr move_group;
+  moveit_visual_tools::MoveItVisualToolsPtr visual_tools;
 
 public:
   JointsAction(std::string name, std::string planning_group) : as_(nh_, name, false),
@@ -26,6 +28,7 @@ public:
     as_.registerPreemptCallback(boost::bind(&JointsAction::preemptCB, this));
     as_.start();
     move_group.reset(new moveit::planning_interface::MoveGroupInterface(planning_group));
+    visual_tools.reset(new moveit_visual_tools::MoveItVisualTools(move_group->getPlanningFrame().c_str(), "/moveit_visual_markers"));
   }
 
   ~JointsAction(void) {}
@@ -34,6 +37,7 @@ public:
   {
     std::cout << "cancelao \n";
     ROS_INFO("%s: Preempted", action_name_.c_str());
+    move_group->stop();
     as_.setPreempted();
     // success = false;
   }
@@ -43,14 +47,14 @@ public:
     irb140_commander::JointsGoalConstPtr goal = as_.acceptNewGoal();
     // publish info to the console for the user
     ROS_INFO("Ejecutando comando de articulaciones");
-    std::cout << "Recibido " << goal->joints.size() << " articulaciones \n";
+    std::cout << "Recibidos " << goal->joints.size() << " joint goals \n";
     // start executing the action
     const robot_state::JointModelGroup *joint_model_group =
         move_group->getCurrentState()->getJointModelGroup(move_group->getName());
 
     ROS_INFO_NAMED("joint_commander", "Reference frame: %s", move_group->getPlanningFrame().c_str());
     ROS_INFO_NAMED("joint_commander", "End effector link: %s", move_group->getEndEffectorLink().c_str());
-    move_group->setMaxVelocityScalingFactor(0.5);
+    move_group->setMaxVelocityScalingFactor(1);
     // Start
     std::cout << "all good \n";
     moveit::core::RobotStatePtr current_state = move_group->getCurrentState();
@@ -69,6 +73,16 @@ public:
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     bool success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO_NAMED("joint_commander", "Plan (joint space goal) %s", success ? "OK" : "FAILED");
+
+    // Visualize the plan in RViz
+    visual_tools->deleteAllMarkers();
+    Eigen::Isometry3d text_pose;
+    text_pose.translation() = Eigen::Vector3d(0, 0, 1); // translate x,y,z
+
+    visual_tools->publishText(text_pose, "Joint Goal Command", rvt::WHITE, rvt::XLARGE);
+    visual_tools->publishTrajectoryLine(my_plan.trajectory_, joint_model_group->getLinkModel(move_group->getEndEffectorLink().c_str()), joint_model_group, rvt::LIME_GREEN);
+    visual_tools->trigger();
+
     move_group->move();
 
     std::cout << "moviendose \n";

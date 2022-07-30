@@ -5,8 +5,9 @@
 #include <moveit_visual_tools/moveit_visual_tools.h>
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
-// #include <sstream>
+
 #include "iostream"
+namespace rvt = rviz_visual_tools;
 
 class PoseRPYAction
 {
@@ -17,6 +18,7 @@ protected:
   irb140_commander::PoseRPYFeedback feedback_;
   irb140_commander::PoseRPYResult result_;
   moveit::planning_interface::MoveGroupInterfacePtr move_group;
+  moveit_visual_tools::MoveItVisualToolsPtr visual_tools;
 
 public:
   PoseRPYAction(std::string name, std::string planning_group) : as_(nh_, name, false),
@@ -27,6 +29,7 @@ public:
     as_.registerPreemptCallback(boost::bind(&PoseRPYAction::preemptCB, this));
     as_.start();
     move_group.reset(new moveit::planning_interface::MoveGroupInterface(planning_group));
+    visual_tools.reset(new moveit_visual_tools::MoveItVisualTools(move_group->getPlanningFrame().c_str(), "/moveit_visual_markers"));
   }
 
   ~PoseRPYAction(void) {}
@@ -49,6 +52,8 @@ public:
     std::cout << "ejecutando comando..."
               << "\n";
 
+    const robot_state::JointModelGroup *joint_model_group =
+        move_group->getCurrentState()->getJointModelGroup(move_group->getName());
     move_group->setMaxVelocityScalingFactor(1);
     ROS_INFO_NAMED("pose_commander", "Reference frame: %s", move_group->getPlanningFrame().c_str());
     ROS_INFO_NAMED("pose_commander", "End effector link: %s", move_group->getEndEffectorLink().c_str());
@@ -77,6 +82,16 @@ public:
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     bool success = (move_group->plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     ROS_INFO_NAMED("pose_commander", "Pose plan %s", success ? "OK" : "FAILED");
+
+    // Visualize the plan in RViz
+    visual_tools->deleteAllMarkers();
+    Eigen::Isometry3d text_pose;
+    text_pose.translation() = Eigen::Vector3d(0, 0, 1); // translate x,y,z
+
+    visual_tools->publishText(text_pose, "Pose Goal Command", rvt::WHITE, rvt::XLARGE);
+    visual_tools->publishTrajectoryLine(my_plan.trajectory_, joint_model_group->getLinkModel(move_group->getEndEffectorLink().c_str()), joint_model_group, rvt::LIME_GREEN);
+    visual_tools->trigger();
+
     // actually move the real robot
     move_group->move();
     move_group->clearPoseTargets();
