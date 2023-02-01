@@ -15,6 +15,6 @@
 	</node>
 
 	<!-- Show in Rviz -->
-	<!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find apc_irb140)/config/rviz_config.rviz" /> -->
-	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find apc_irb140)/config/rviz_icac.rviz" />
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find apc_irb140)/config/rviz_config.rviz" />
+	<!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find apc_irb140)/config/rviz_icac.rviz" /> -->
 </launch>

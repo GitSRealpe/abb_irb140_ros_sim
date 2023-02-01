@@ -4,14 +4,15 @@
 
     <arg name="use_gui" default="false" />
 
-    <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
+    <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers
+    configured by default) -->
     <include file="$(find apc_irb140_moveit)/launch/move_group.launch">
         <arg name="allow_trajectory_execution" value="true" />
         <!-- fake: publica directamente a los joint states -->
         <!-- roscontrol: publica directamente a un controller de ROS -->
         <!-- simple: publica directamente a cualquier controller en la lista -->
         <!-- Choose controller manager: fake, or ros_control, simple -->
-        <arg name="moveit_controller_manager" value="simple" />
+        <arg name="moveit_controller_manager" value="fake" />
         <arg name="fake_execution_type" value="interpolate" />
         <arg name="info" value="true" />
         <arg name="debug" value="false" />
@@ -21,7 +22,8 @@
 
     <arg name="scene_file" default="$(find apc_irb140)/worlds/scena.scene" />
     <!-- <arg name="scene_file" default="$(find apc_irb140)/worlds/test.scene" /> -->
-    <node name="moveit_publish_scene_from_text" pkg="moveit_ros_planning" type="moveit_publish_scene_from_text" args="$(arg scene_file)" />
+    <node name="moveit_publish_scene_from_text" pkg="moveit_ros_planning"
+        type="moveit_publish_scene_from_text" args="$(arg scene_file)" />
 
 </launch>
   
