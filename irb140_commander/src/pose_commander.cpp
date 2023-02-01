@@ -54,7 +54,7 @@ public:
 
     const robot_state::JointModelGroup *joint_model_group =
         move_group->getCurrentState()->getJointModelGroup(move_group->getName());
-    move_group->setMaxVelocityScalingFactor(1);
+    move_group->setMaxVelocityScalingFactor(0.1);
     ROS_INFO_NAMED("pose_commander", "Reference frame: %s", move_group->getPlanningFrame().c_str());
     ROS_INFO_NAMED("pose_commander", "End effector link: %s", move_group->getEndEffectorLink().c_str());
     move_group->setNumPlanningAttempts(10);

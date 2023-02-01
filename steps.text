@@ -3,3 +3,7 @@
 
 -que cambios hay?
  los objetos se pueden cargar directamente desde el paquete sim
+
+
+ export ROS_MASTER_URI=http://10.0.0.121:11311
+ export ROS_IP=10.0.0.121
